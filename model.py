@@ -70,6 +70,15 @@ class Prevozno_sredstvo:
             self.izpusti += pot.izpusti()
         return self.izpusti
 
+    def dodaj_pot(self, pot):
+        self.poti.append(pot)
+
+    def odstrani_pot(self, pot):
+        self.poti.remove(pot)
+
+    def podvoji_pot(self, pot):
+        self.poti.append(pot)
+
 
 class Stanje:
     def __init__(self):
