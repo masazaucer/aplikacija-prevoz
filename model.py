@@ -1,3 +1,5 @@
+CENA_GORIVA = 1,20
+
 class Uporabnik:
     def __init__(self, ime):
         self.ime = ime
@@ -31,4 +33,39 @@ class Pot:
 
     def izracunaj_ceno(self):
         self.cena += cena_na_km * self.razdalja()
+
+    def izracunaj_izpuste(self):
+        self.izpusti = self.razdalja() * CO2_NA_KM
+
+class Prevozno_sredstvo:
+    def __init__(self, ime, poraba):
+        self.ime = ime
+        self.poraba = poraba
+        self.poti = []
+        self.cena = CENA_GORIVA * poraba
+        self.cena = 0
+        self.izpusti = 0
+
+    def skupna_dolzina(self):
+        d = 0
+        for pot in self.poti:
+            d += pot.razdalja()
+        return d
+    
+    def skupno_trajanje(self):
+        t = 0
+        for pot in self.poti:
+            t += pot.trajanje()
+        return t
+    
+    def stevilo_poti(self):
+        return len(self.poti)
+
+    def dodaj_strosek(self, strosek):
+        self.cena += strosek
         return self.cena
+
+    def izpusti_co2(self):
+        for pot in self.poti:
+            self.izpusti += pot.izpusti()
+        return self.izpusti
