@@ -69,3 +69,49 @@ class Prevozno_sredstvo:
         for pot in self.poti:
             self.izpusti += pot.izpusti()
         return self.izpusti
+
+
+class Stanje:
+    def __init__(self):
+        self.prevozna_sredstva = []
+        self.aktualno_sredstvo = None
+        self.skupna_razdalja = 0
+        self.cena = 0
+        self.trajanje = 0
+
+    def dodaj_sredstvo(self, sredstvo):
+        self.prevozna_sredstva.append(sredstvo)
+
+    def zamenjaj_sredstvo(self, sredstvo):
+        self.aktualno_sredstvo = sredstvo
+
+    def dodaj_pot(self, pot):
+        self.aktualno_sredstvo.dodaj_pot(pot)
+
+    def izbrisi_pot(self, pot):
+        self.aktualno_sredstvo.pobrisi_pot(pot)
+
+
+    def skupna_razdalja(self):
+        d = 0
+        for sredstvo in self.prevozna_sredstva:
+            d += sredstvo.skupna_dolzina()
+        return d
+
+    def skupno_trajanje(self):
+        t = 0
+        for sredstvo in self.prevozna_sredstva:
+            t += sredstvo.skupno_trajanje()
+        return t      
+
+    def skupna_cena(self):
+        c = 0
+        for sredstvo in self.prevozna_sredstva:
+            c += sredstvo.cena
+        return c
+
+    def stevilo_poti(self):
+        st = 0
+        for sredstvo in self.prevozna_sredstva:
+            st += sredstvo.stevilo_poti()
+        return st
