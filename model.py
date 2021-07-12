@@ -1,12 +1,15 @@
+from re import I
 from model import CENA_GORIVA
 import googlemaps
 import json
 import requests
+import math
 
 CENA_NA_KM = 0.0875
 CO2_NA_KM = 1
 CENA_GORIVA = 1,20
 API_KEY = 'AIzaSyCtY_U7vcBuZna2_j4TiCxl9tUuSKL_8mM'
+SREDSTVA = ["walking", "bicycling", "driving", "transiting", "train", "bus"]
 
 map_client = googlemaps.Client(API_KEY)
 
@@ -57,6 +60,18 @@ class Pot:
 
     def izracunaj_izpuste(self):
         self.izpusti = self.razdalja() * CO2_NA_KM
+
+    def optimalna_pot(self):
+        min = math.inf
+        optimalno = ''
+        for sredstvo in SREDSTVA:
+            i = indeks(self.razdalja(), self.trajanje(), self.izracunaj_izpuste(), sredstvo)
+            if i < min:
+                optimalno = sredstvo
+                min = I
+        return [optimalno, self.razdalja(), self.trajanje(), self.izracunaj_izpuste()]
+
+
 
 class Prevozno_sredstvo:
     def __init__(self, ime, poraba):
