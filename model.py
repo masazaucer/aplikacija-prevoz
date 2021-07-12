@@ -1,4 +1,16 @@
+from model import CENA_GORIVA
+import googlemaps
+import json
+import requests
+
+CENA_NA_KM = 0.0875
+CO2_NA_KM = 1
 CENA_GORIVA = 1,20
+API_KEY = 'AIzaSyCtY_U7vcBuZna2_j4TiCxl9tUuSKL_8mM'
+
+map_client = googlemaps.Client(API_KEY)
+
+zacetni_url = "https://maps.googleapis.com/maps/api/distancematrix/json?units=metric"
 
 class Uporabnik:
     def __init__(self, ime):
@@ -20,19 +32,28 @@ class Uporabnik:
             self.pomembnost_onesnazevanja = False
 
 class Pot:
-    def __init__(self, zacetek, konec, cena):
+    def __init__(self, zacetek, konec, sredstvo, cena):
         self.zacetek = zacetek
         self.konec = konec
+        self.sredstvo = sredstvo
         self.cena = cena
 
+    def __str__(self):
+        return f'Pot({self.zacetek}, {self.konec}, {self.sredstvo}, {self.cena}$)'
+
     def razdalja(self):
-        return self.konec - self.zacetek
+        url = zacetni_url + "&origins=" + self.zacetek + "&destinations=" + self.konec + "&mode=" + self.sredstvo + "&key=" + API_KEY
+        output = requests.get(url).json()
+        return output["rows"][0]["elements"][0]["distance"]["value"]
 
     def trajanje(self):
-        return None
+        url = zacetni_url + "&origins=" + self.zacetek + "&destinations=" + self.konec + "&mode=" + self.sredstvo + "&key=" + API_KEY
+        output = requests.get(url).json()
+        return output["rows"][0]["elements"][0]["duration"]["value"]
+
 
     def izracunaj_ceno(self):
-        self.cena += cena_na_km * self.razdalja()
+        self.cena += CENA_NA_KM * self.razdalja()
 
     def izracunaj_izpuste(self):
         self.izpusti = self.razdalja() * CO2_NA_KM
