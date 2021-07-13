@@ -54,9 +54,16 @@ class Pot:
         output = requests.get(url).json()
         return output["rows"][0]["elements"][0]["duration"]["value"]
 
-
-    def izracunaj_ceno(self):
-        self.cena += CENA_NA_KM * self.razdalja()
+    def izracunana_cena(self):
+        if self.sredstvo == 'walking':
+            self.cena = 0
+        elif self.sredstvo == 'driving':
+            self.cena += CENA_NA_KM * self.razdalja()
+        elif self.sredstvo == 'transiting':
+            url = zacetni_url + "&origins=" + self.zacetek + "&destinations=" + self.konec + "&mode=" + self.sredstvo + "&key=" + API_KEY
+            output = requests.get(url).json()
+            valuta = output["rows"][0]["elements"][0]["fare"]["currency"]
+            self.cena = output["rows"][0]["elements"][0]["fare"]["value"]
 
     def izracunaj_izpuste(self):
         self.izpusti = self.razdalja() * CO2_NA_KM
@@ -68,8 +75,8 @@ class Pot:
             i = indeks(self.razdalja(), self.trajanje(), self.izracunaj_izpuste(), sredstvo)
             if i < min:
                 optimalno = sredstvo
-                min = I
-        return [optimalno, self.razdalja(), self.trajanje(), self.izracunaj_izpuste()]
+                min = i
+        return Pot(self.zacetek, self.konec, optimalno, self.cena)
 
 
 
