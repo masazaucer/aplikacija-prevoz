@@ -5,14 +5,16 @@ import requests
 import math
 
 CENA_NA_KM = 8*1.268/100
-CO2_NA_KM = 180 #g/km
+CO2_NA_KM_AVTO = 180 #g/km
+CO2_NA_KM_BUS = 90 #g/km
+CO2_NA_KM_VLAK = 40 #g/km
 CENA_GORIVA = 1.268
 CENA_IZPUSTOV_VISOKA = 190
 CENA_IZPUSTOV_SREDNJA = 100
 CENA_IZPUSTOV_NIZKA = 60
 CENA_CASA_VISOKA = 0.15 / 60
 CENA_CASA_SREDNJA = 0.10 / 60
-CENA_CASA_NIZKA = 0.075 / 60
+CENA_CASA_NIZKA = 0.75 / 60
 STROSEK_AVTOMOBILA_NA_KM = 0.15
 CENA_VLAK_NA_KM = 0.1
 
@@ -114,7 +116,15 @@ class Pot:
         return c
 
     def izracunaj_izpuste(self):
-        return self.razdalja()["razdalja"] / 1000 * CO2_NA_KM * (10 ** 6)
+        if self.sredstvo == "driving":
+            return self.razdalja()["razdalja"] * CO2_NA_KM_AVTO * 10 **(-9)
+        elif self.sredstvo == "train":
+            return self.razdalja()["razdalja"] * CO2_NA_KM_VLAK * 10 **(-9)
+        elif self.sredstvo == "bus":
+            return self.razdalja()["razdalja"] * CO2_NA_KM_BUS * 10 **(-9)
+        else:
+            return 0
+
 
 
     def optimalna_pot(self, preferenca_cas=None, preferenca_onesnazevanje=None):
@@ -127,6 +137,7 @@ class Pot:
             else:
 
                 i = indeks(pot.trajanje(), pot.izracunaj_izpuste(), pot.cena(), preferenca_cas, preferenca_onesnazevanje)
+                print(i)
                 if i < min:
                     optimalna = pot
                     min = i
