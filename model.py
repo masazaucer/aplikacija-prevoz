@@ -1,13 +1,12 @@
 from re import I
-from model import CENA_GORIVA
 import googlemaps
 import json
 import requests
 import math
 
-CENA_NA_KM = 0.0875
-CO2_NA_KM = 1
-CENA_GORIVA = 1,20
+CENA_NA_KM = 8*1.268/100
+CO2_NA_KM = 180 #g/km
+CENA_GORIVA = 1.268
 API_KEY = 'AIzaSyCtY_U7vcBuZna2_j4TiCxl9tUuSKL_8mM'
 SREDSTVA = ["walking", "bicycling", "driving", "train", "bus"]
 
@@ -51,6 +50,7 @@ class Pot:
         else:
             u = zacetni_url + "&origins=" + self.zacetek + "&destinations=" + self.konec + "&mode=" + self.sredstvo + "&key=" + API_KEY
             return u
+    #sestavi url za klic distance matrice preko API
 
 
     def razdalja(self):
@@ -62,17 +62,17 @@ class Pot:
         return output["rows"][0]["elements"][0]["duration"]["value"]
 
     def izracunana_cena(self):
-        if self.sredstvo == 'walking' or self.sredstvo == 'bicycling':
-            self.cena = 0
-        elif self.sredstvo == 'driving':
+        if self.sredstvo == 'driving':
             self.cena += CENA_NA_KM * self.razdalja()
-        elif self.sredstvo == 'train' or self.sredstvo == 'bus':
-            output = requests.get(self.url).json()
-            valuta = output["rows"][0]["elements"][0]["fare"]["currency"]
-            self.cena = output["rows"][0]["elements"][0]["fare"]["value"]
+        else:
+            self.cena = 0
 
     def izracunaj_izpuste(self):
         self.izpusti = self.razdalja() * CO2_NA_KM
+
+
+def indeks(razdalja, trajanje, izpusti, sredstvo):
+    pass
 
     def optimalna_pot(self):
         min = math.inf
