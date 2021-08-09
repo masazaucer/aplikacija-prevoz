@@ -34,14 +34,14 @@ class Uporabnik:
             self.pomembnost_onesnazevanja = False
 
 class Pot:
-    def __init__(self, zacetek, konec, sredstvo, cena):
+    def __init__(self, zacetek, konec, sredstvo, cena=0):
         self.zacetek = zacetek
         self.konec = konec
         self.sredstvo = sredstvo
         self.cena = cena
 
     def __str__(self):
-        return f'Pot({self.zacetek}, {self.konec}, {self.sredstvo}, {self.cena}$)'
+        return f'Pot({self.zacetek}, {self.konec}, {self.sredstvo}, {self.cena}€)'
 
     def url(self):
         if self.sredstvo == 'train' or self.sredstvo == 'bus':
@@ -53,19 +53,29 @@ class Pot:
     #sestavi url za klic distance matrice preko API
 
 
-    def razdalja(self):
-        output = requests.get(self.url).json()
-        return output["rows"][0]["elements"][0]["distance"]["value"]
+def razdalja(self):
+        try:
+	output = requests.get(self.url()).json()
+            razd = output["rows"][0]["elements"][0]["distance"]["value"]
+            kon = output['destination_addresses']
+            zac = output['origin_addresses']
+            print(output)
+            return {"razdalja": razd, "zacetek": zac, "konec": kon}
+        except KeyError:
+            return None
 
     def trajanje(self):
-        output = requests.get(self.url).json()
-        return output["rows"][0]["elements"][0]["duration"]["value"]
+        try:
+            output = requests.get(self.url()).json()
+            return output["rows"][0]["elements"][0]["duration"]["value"]
+        except KeyError:
+            return None
 
     def izracunana_cena(self):
         if self.sredstvo == 'driving':
             self.cena += CENA_NA_KM * self.razdalja()
         else:
-            self.cena = 0
+            self.cena += 0
 
     def izracunaj_izpuste(self):
         self.izpusti = self.razdalja() * CO2_NA_KM
