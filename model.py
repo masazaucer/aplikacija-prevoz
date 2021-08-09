@@ -42,6 +42,31 @@ class Uporabnik:
         elif vrednost == 'malo':
             self.pomembnost_onesnazevanja = False
 
+
+def cena_casa(trajanje, preferenca_cas):
+    if preferenca_cas:
+        cena = CENA_CASA_VISOKA * trajanje
+    elif not preferenca_cas:
+        cena = CENA_CASA_NIZKA * trajanje
+    else:
+        cena = CENA_CASA_SREDNJA * trajanje
+    return cena
+
+
+def cena_izpustov(izpusti, preferenca_onesnazevanje):
+    if preferenca_onesnazevanje:
+        cena = CENA_IZPUSTOV_VISOKA * izpusti
+    elif not preferenca_onesnazevanje:
+        cena = CENA_IZPUSTOV_NIZKA * izpusti
+    else:
+        cena = CENA_IZPUSTOV_SREDNJA * izpusti
+    return cena
+
+    
+def indeks(trajanje, izpusti, cena, preferenca_cas=None, preferenca_onesnazevanje=None):
+    return cena + cena_casa(trajanje, preferenca_cas) + cena_izpustov(izpusti, preferenca_onesnazevanje)
+
+
 class Pot:
     def __init__(self, zacetek, konec, sredstvo):
         self.zacetek = zacetek
@@ -92,27 +117,16 @@ class Pot:
         self.izpusti = self.razdalja() * CO2_NA_KM * (10 ** 6)
 
 
-def indeks(sredstvo, trajanje, izpusti, cena, preferenca_cas=None, preferenca_onesnazevanje=None):
-    if preferenca_onesnazevanje:
-        cena += CENA_IZPUSTOV_VISOKA * izpusti
-    elif not preferenca_onesnazevanje:
-        cena += CENA_IZPUSTOV_NIZKA * izpusti
-    else:
-        cena += CENA_IZPUSTOV_SREDNJA * izpusti
-
-    if preferenca_cas:
-        cena += 
 
 
-
+        
     
 
     def optimalna_pot(self, preferenca_cas, preferenca_onesnazevanje):
         min = math.inf
-        optimalno = ''
         for sredstvo in SREDSTVA:
             pot = Pot(self.zacetek(), self.konec(), sredstvo)
-            i = indeks(pot.sredstvo, pot.trajanje(), pot.izracunaj_izpuste(), pot.cena(), preferenca_cas, preferenca_onesnazevanje)
+            i = indeks(pot.trajanje(), pot.izracunaj_izpuste(), pot.cena(), preferenca_cas, preferenca_onesnazevanje)
             if i < min:
                 optimalna = pot
                 min = i
