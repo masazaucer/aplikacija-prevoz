@@ -17,7 +17,7 @@ STROSEK_AVTOMOBILA_NA_KM = 0.15
 CENA_VLAK_NA_KM = 0.1
 
 API_KEY = 'AIzaSyCtY_U7vcBuZna2_j4TiCxl9tUuSKL_8mM'
-SREDSTVA = ["walking", "bicycling", "driving", "train", "bus"]
+SREDSTVA = ["walking","driving", "train", "bus"]
 
 map_client = googlemaps.Client(API_KEY)
 
@@ -92,7 +92,7 @@ class Pot:
             razd = output["rows"][0]["elements"][0]["distance"]["value"]
             kon = output['destination_addresses']
             zac = output['origin_addresses']
-            print(output)
+            
             return {"razdalja": razd, "zacetek": zac, "konec": kon}
         except KeyError:
             return None
@@ -106,30 +106,30 @@ class Pot:
 
     def cena(self):
         if self.sredstvo == 'driving':
-            c = STROSEK_AVTOMOBILA_NA_KM * self.razdalja()
+            c = STROSEK_AVTOMOBILA_NA_KM * self.razdalja()["razdalja"] / 1000
         elif self.sredstvo == 'bus' or self.sredstvo == 'train':
-            c = CENA_VLAK_NA_KM * self.razdalja()
+            c = CENA_VLAK_NA_KM * self.razdalja()["razdalja"] / 1000
         else:
             c = 0
         return c
 
     def izracunaj_izpuste(self):
-        self.izpusti = self.razdalja() * CO2_NA_KM * (10 ** 6)
+        return self.razdalja()["razdalja"] / 1000 * CO2_NA_KM * (10 ** 6)
 
 
-
-
-        
-    
-
-    def optimalna_pot(self, preferenca_cas, preferenca_onesnazevanje):
+    def optimalna_pot(self, preferenca_cas=None, preferenca_onesnazevanje=None):
         min = math.inf
         for sredstvo in SREDSTVA:
-            pot = Pot(self.zacetek(), self.konec(), sredstvo)
-            i = indeks(pot.trajanje(), pot.izracunaj_izpuste(), pot.cena(), preferenca_cas, preferenca_onesnazevanje)
-            if i < min:
-                optimalna = pot
-                min = i
+            
+            pot = Pot(self.zacetek, self.konec, sredstvo)
+            if not pot:
+                continue
+            else:
+
+                i = indeks(pot.trajanje(), pot.izracunaj_izpuste(), pot.cena(), preferenca_cas, preferenca_onesnazevanje)
+                if i < min:
+                    optimalna = pot
+                    min = i
         return optimalna
 
 
