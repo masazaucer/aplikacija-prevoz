@@ -7,6 +7,15 @@ import math
 CENA_NA_KM = 8*1.268/100
 CO2_NA_KM = 180 #g/km
 CENA_GORIVA = 1.268
+CENA_IZPUSTOV_VISOKA = 190
+CENA_IZPUSTOV_SREDNJA = 100
+CENA_IZPUSTOV_NIZKA = 60
+CENA_CASA_VISOKA = 0.15 / 60
+CENA_CASA_SREDNJA = 0.10 / 60
+CENA_CASA_NIZKA = 0.075 / 60
+STROSEK_AVTOMOBILA_NA_KM = 0.15
+CENA_VLAK_NA_KM = 0.1
+
 API_KEY = 'AIzaSyCtY_U7vcBuZna2_j4TiCxl9tUuSKL_8mM'
 SREDSTVA = ["walking", "bicycling", "driving", "train", "bus"]
 
@@ -34,11 +43,10 @@ class Uporabnik:
             self.pomembnost_onesnazevanja = False
 
 class Pot:
-    def __init__(self, zacetek, konec, sredstvo, cena=0):
+    def __init__(self, zacetek, konec, sredstvo):
         self.zacetek = zacetek
         self.konec = konec
         self.sredstvo = sredstvo
-        self.cena = cena
 
     def __str__(self):
         return f'Pot({self.zacetek}, {self.konec}, {self.sredstvo}, {self.cena}€)'
@@ -50,12 +58,12 @@ class Pot:
         else:
             u = zacetni_url + "&origins=" + self.zacetek + "&destinations=" + self.konec + "&mode=" + self.sredstvo + "&key=" + API_KEY
             return u
-    #sestavi url za klic distance matrice preko API
+#sestavi url za klic distance matrice preko API
 
 
-def razdalja(self):
+    def razdalja(self):
         try:
-	output = requests.get(self.url()).json()
+            output = requests.get(self.url()).json()
             razd = output["rows"][0]["elements"][0]["distance"]["value"]
             kon = output['destination_addresses']
             zac = output['origin_addresses']
@@ -71,28 +79,44 @@ def razdalja(self):
         except KeyError:
             return None
 
-    def izracunana_cena(self):
+    def cena(self):
         if self.sredstvo == 'driving':
-            self.cena += CENA_NA_KM * self.razdalja()
+            c = STROSEK_AVTOMOBILA_NA_KM * self.razdalja()
+        elif self.sredstvo == 'bus' or self.sredstvo == 'train':
+            c = CENA_VLAK_NA_KM * self.razdalja()
         else:
-            self.cena += 0
+            c = 0
+        return c
 
     def izracunaj_izpuste(self):
-        self.izpusti = self.razdalja() * CO2_NA_KM
+        self.izpusti = self.razdalja() * CO2_NA_KM * (10 ** 6)
 
 
-def indeks(razdalja, trajanje, izpusti, sredstvo):
-    pass
+def indeks(sredstvo, trajanje, izpusti, cena, preferenca_cas=None, preferenca_onesnazevanje=None):
+    if preferenca_onesnazevanje:
+        cena += CENA_IZPUSTOV_VISOKA * izpusti
+    elif not preferenca_onesnazevanje:
+        cena += CENA_IZPUSTOV_NIZKA * izpusti
+    else:
+        cena += CENA_IZPUSTOV_SREDNJA * izpusti
 
-    def optimalna_pot(self):
+    if preferenca_cas:
+        cena += 
+
+
+
+    
+
+    def optimalna_pot(self, preferenca_cas, preferenca_onesnazevanje):
         min = math.inf
         optimalno = ''
         for sredstvo in SREDSTVA:
-            i = indeks(self.razdalja(), self.trajanje(), self.izracunaj_izpuste(), sredstvo)
+            pot = Pot(self.zacetek(), self.konec(), sredstvo)
+            i = indeks(pot.sredstvo, pot.trajanje(), pot.izracunaj_izpuste(), pot.cena(), preferenca_cas, preferenca_onesnazevanje)
             if i < min:
-                optimalno = sredstvo
+                optimalna = pot
                 min = i
-        return Pot(self.zacetek, self.konec, optimalno, self.cena)
+        return optimalna
 
 
 
