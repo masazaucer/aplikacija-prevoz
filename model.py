@@ -45,17 +45,17 @@ class Uporabnik:
             self.pomembnost_onesnazevanja = False
 
 
+#izračuna vrednost časa, ki ga porabiš za pot
 def cena_casa(trajanje, preferenca_cas):
     if preferenca_cas:
-        cena = CENA_CASA_VISOKA/60 * trajanje
+        cena = CENA_CASA_VISOKA / 60 * trajanje
     elif preferenca_cas == None:
-        cena = CENA_CASA_SREDNJA/60 * trajanje
+        cena = CENA_CASA_SREDNJA / 60 * trajanje
     else:
-        cena = CENA_CASA_NIZKA/60 * trajanje
-  
+        cena = CENA_CASA_NIZKA / 60 * trajanje
     return cena
 
-
+#izračuna vrednost izpustov CO2, ki jih proizvedeš s potjo
 def cena_izpustov(izpusti, preferenca_onesnazevanje):
     if preferenca_onesnazevanje:
         cena = CENA_IZPUSTOV_VISOKA * izpusti
@@ -63,10 +63,9 @@ def cena_izpustov(izpusti, preferenca_onesnazevanje):
         cena = CENA_IZPUSTOV_SREDNJA * izpusti
     else:
         cena = CENA_IZPUSTOV_NIZKA * izpusti
-   
     return cena
 
-    
+#izračuna celotno ceno poti skupaj z navideznimi stroški časa in izpustov CO2
 def indeks(trajanje, izpusti, cena, preferenca_cas=None, preferenca_onesnazevanje=None):
     return cena + cena_casa(trajanje, preferenca_cas) + cena_izpustov(izpusti, preferenca_onesnazevanje)
 
@@ -80,6 +79,7 @@ class Pot:
     def __str__(self):
         return f'Pot({self.zacetek}, {self.konec}, {self.sredstvo}, {self.cena}€)'
 
+    #sestavi url za klic distance matrice preko API
     def url(self):
         if self.sredstvo == 'train' or self.sredstvo == 'bus':
             u = zacetni_url + "&origins=" + self.zacetek + "&destinations=" + self.konec + "&mode=transiting&transit_mode=" + self.sredstvo + "&key=" + API_KEY
@@ -87,9 +87,8 @@ class Pot:
         else:
             u = zacetni_url + "&origins=" + self.zacetek + "&destinations=" + self.konec + "&mode=" + self.sredstvo + "&key=" + API_KEY
             return u
-#sestavi url za klic distance matrice preko API
 
-
+    #izračuna prepotovano razdaljo med začetnim in končnim krajem z danim prevoznim sredstvom
     def razdalja(self):
         try:
             output = requests.get(self.url()).json()
@@ -101,6 +100,7 @@ class Pot:
         except KeyError:
             return None
 
+    #izračuna čas, potreben za pot z danim prevoznim sredstvom
     def trajanje(self):
         try:
             output = requests.get(self.url()).json()
@@ -108,6 +108,7 @@ class Pot:
         except KeyError:
             return None
 
+    #izračuna dejansko ceno poti(gorivo, stroški uporabe avtomobila, približna ocena cene vozovnic na kilometer prepotovane poti z vlakom/busom)
     def cena(self):
         if self.sredstvo == 'driving':
             c = STROSEK_AVTOMOBILA_NA_KM * self.razdalja()["razdalja"] / 1000
@@ -118,6 +119,7 @@ class Pot:
         
         return c
 
+    #izračuna količino izpustov CO2, proizvedenih s potjo v tonah
     def izracunaj_izpuste(self):
         if self.sredstvo == "driving":
             return self.razdalja()["razdalja"] * CO2_NA_KM_AVTO * 10 **(-9)
@@ -129,7 +131,7 @@ class Pot:
             return 0
 
 
-
+    #določi optimalno prevozno sredstvo za dano začetno in končno točko
     def optimalna_pot(self, preferenca_cas=None, preferenca_onesnazevanje=None):
         min = math.inf
         for sredstvo in SREDSTVA:
