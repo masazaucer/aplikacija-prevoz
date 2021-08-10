@@ -4,19 +4,19 @@ import json
 import requests
 import math
 
-CENA_NA_KM = 8*1.268/100
+CENA_NA_KM = 8*1.268/100 #€/l
 CO2_NA_KM_AVTO = 180 #g/km
 CO2_NA_KM_BUS = 90 #g/km
-CO2_NA_KM_VLAK = 40 #g/km
-CENA_GORIVA = 1.268
-CENA_IZPUSTOV_VISOKA = 190
-CENA_IZPUSTOV_SREDNJA = 100
-CENA_IZPUSTOV_NIZKA = 60
-CENA_CASA_VISOKA = 0.15 / 60
-CENA_CASA_SREDNJA = 0.10 / 60
-CENA_CASA_NIZKA = 0.75 / 60
-STROSEK_AVTOMOBILA_NA_KM = 0.15
-CENA_VLAK_NA_KM = 0.1
+CO2_NA_KM_VLAK = 45 #g/km
+CENA_GORIVA = 1.268 #€/l
+CENA_IZPUSTOV_VISOKA = 500 #€/t CO2
+CENA_IZPUSTOV_SREDNJA = 270 #€/t CO2
+CENA_IZPUSTOV_NIZKA = 156 #€/t CO2
+CENA_CASA_VISOKA = 0.14 #€/min
+CENA_CASA_SREDNJA = 0.08 #€/min
+CENA_CASA_NIZKA = 0.02 #€/min
+STROSEK_AVTOMOBILA_NA_KM = 0.15 #€/km
+CENA_VLAK_NA_KM = 0.1 #€/km
 
 API_KEY = 'AIzaSyCtY_U7vcBuZna2_j4TiCxl9tUuSKL_8mM'
 SREDSTVA = ["walking","driving", "train", "bus"]
@@ -47,21 +47,23 @@ class Uporabnik:
 
 def cena_casa(trajanje, preferenca_cas):
     if preferenca_cas:
-        cena = CENA_CASA_VISOKA * trajanje
-    elif not preferenca_cas:
-        cena = CENA_CASA_NIZKA * trajanje
+        cena = CENA_CASA_VISOKA/60 * trajanje
+    elif preferenca_cas == None:
+        cena = CENA_CASA_SREDNJA/60 * trajanje
     else:
-        cena = CENA_CASA_SREDNJA * trajanje
+        cena = CENA_CASA_NIZKA/60 * trajanje
+  
     return cena
 
 
 def cena_izpustov(izpusti, preferenca_onesnazevanje):
     if preferenca_onesnazevanje:
         cena = CENA_IZPUSTOV_VISOKA * izpusti
-    elif not preferenca_onesnazevanje:
-        cena = CENA_IZPUSTOV_NIZKA * izpusti
-    else:
+    elif preferenca_onesnazevanje == None:
         cena = CENA_IZPUSTOV_SREDNJA * izpusti
+    else:
+        cena = CENA_IZPUSTOV_NIZKA * izpusti
+   
     return cena
 
     
@@ -113,6 +115,7 @@ class Pot:
             c = CENA_VLAK_NA_KM * self.razdalja()["razdalja"] / 1000
         else:
             c = 0
+        
         return c
 
     def izracunaj_izpuste(self):
