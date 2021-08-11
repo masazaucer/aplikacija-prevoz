@@ -156,7 +156,7 @@ class Pot:
 
 
 class Prevozno_sredstvo:
-    def __init__(self, ime, poraba):
+    def __init__(self, ime, poraba=0):
         self.ime = ime
         self.poraba = poraba
         self.poti = []
@@ -212,9 +212,14 @@ class Stanje:
         self.trajanje = 0
 
     def dodaj_sredstvo(self, sredstvo):
-        self.prevozna_sredstva.append(sredstvo)
+        if sredstvo in SREDSTVA:
+            sredstvo = Prevozno_sredstvo(sredstvo)
+            self.prevozna_sredstva.append(sredstvo)
+        else:
+            print('To sredstvo ne obstaja')
 
-    def zamenjaj_sredstvo(self, sredstvo):
+
+    def izberi_sredstvo(self, sredstvo):
         self.aktualno_sredstvo = sredstvo
 
     def dodaj_pot(self, zacetek, konec):
