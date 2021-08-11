@@ -218,8 +218,11 @@ class Stanje:
         self.aktualno_sredstvo = sredstvo
 
     def dodaj_pot(self, zacetek, konec):
-        pot = Pot(zacetek, konec, self.aktualno_sredstvo.ime)
-        self.aktualno_sredstvo.dodaj_pot(pot)
+        try:
+            pot = Pot(zacetek, konec, self.aktualno_sredstvo.ime)
+            self.aktualno_sredstvo.dodaj_pot(pot)
+        except AttributeError:
+            print('Izberi sredstvo!')
 
     def izbrisi_pot(self, pot):
         self.aktualno_sredstvo.pobrisi_pot(pot)
