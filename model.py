@@ -160,7 +160,6 @@ class Prevozno_sredstvo:
         self.ime = ime
         self.poraba = poraba
         self.poti = []
-        self.cena = CENA_GORIVA * poraba
         self.cena = 0
         self.izpusti = 0
 
@@ -175,6 +174,13 @@ class Prevozno_sredstvo:
         for pot in self.poti:
             t += pot.trajanje()
         return t
+
+    def skupna_cena(self):
+        cena = self.cena
+        for pot in self.poti:
+            cena += pot.cena()
+        return cena
+
     
     def stevilo_poti(self):
         return len(self.poti)
