@@ -175,12 +175,11 @@ class Prevozno_sredstvo:
             t += pot.trajanje()
         return t
 
-    def skupna_cena(self):
+    def skupna_cena_sredstva(self):
         cena = self.cena
         for pot in self.poti:
             cena += pot.cena()
         return cena
-
     
     def stevilo_poti(self):
         return len(self.poti)
@@ -208,7 +207,7 @@ class Stanje:
     def __init__(self):
         self.prevozna_sredstva = []
         self.aktualno_sredstvo = None
-        self.skupna_razdalja = 0
+        self.razdalja = 0
         self.cena = 0
         self.trajanje = 0
 
@@ -218,7 +217,8 @@ class Stanje:
     def zamenjaj_sredstvo(self, sredstvo):
         self.aktualno_sredstvo = sredstvo
 
-    def dodaj_pot(self, pot):
+    def dodaj_pot(self, zacetek, konec):
+        pot = Pot(zacetek, konec, self.aktualno_sredstvo.ime)
         self.aktualno_sredstvo.dodaj_pot(pot)
 
     def izbrisi_pot(self, pot):
@@ -240,7 +240,7 @@ class Stanje:
     def skupna_cena(self):
         c = 0
         for sredstvo in self.prevozna_sredstva:
-            c += sredstvo.cena
+            c += sredstvo.skupna_cena_sredstva()
         return c
 
     def stevilo_poti(self):
