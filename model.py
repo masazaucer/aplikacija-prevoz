@@ -19,7 +19,7 @@ STROSEK_AVTOMOBILA_NA_KM = 0.15 #€/km
 CENA_VLAK_NA_KM = 0.1 #€/km
 
 API_KEY = 'AIzaSyCtY_U7vcBuZna2_j4TiCxl9tUuSKL_8mM'
-SREDSTVA = ["walking","driving", "train", "bus"]
+SREDSTVA = ["walking", "bicycling", "driving", "train", "bus"]
 
 map_client = googlemaps.Client(API_KEY)
 
@@ -84,6 +84,9 @@ class Pot:
         if self.sredstvo == 'train' or self.sredstvo == 'bus':
             u = zacetni_url + "&origins=" + self.zacetek + "&destinations=" + self.konec + "&mode=transiting&transit_mode=" + self.sredstvo + "&key=" + API_KEY
             return u
+        elif self.sredstvo == 'walking' or self.sredstvo == 'bicycling':
+            u = zacetni_url + "&origins=" + self.zacetek + "&destinations=" + self.konec + "&mode=walking&key=" + API_KEY
+            return u
         else:
             u = zacetni_url + "&origins=" + self.zacetek + "&destinations=" + self.konec + "&mode=" + self.sredstvo + "&key=" + API_KEY
             return u
@@ -104,7 +107,10 @@ class Pot:
     def trajanje(self):
         try:
             output = requests.get(self.url()).json()
-            return output["rows"][0]["elements"][0]["duration"]["value"]
+            if self.sredstvo == 'bicycling':
+                return (output["rows"][0]["elements"][0]["duration"]["value"]) / 5
+            else:
+                return output["rows"][0]["elements"][0]["duration"]["value"]
         except KeyError:
             return None
 
@@ -140,7 +146,6 @@ class Pot:
             if not pot:
                 continue
             else:
-
                 i = indeks(pot.trajanje(), pot.izracunaj_izpuste(), pot.cena(), preferenca_cas, preferenca_onesnazevanje)
                 print(i)
                 if i < min:
