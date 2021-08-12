@@ -206,19 +206,23 @@ class Prevozno_sredstvo:
 class Stanje:
     def __init__(self):
         self.prevozna_sredstva = []
+        self.poti = []
         self.aktualno_sredstvo = None
+        self.prevozna_sredstva_po_imenih = {}
+        self.poti_po_imenih = {}
+        self.poti_po_sredstvih = {}
         self.razdalja = 0
         self.cena = 0
         self.trajanje = 0
 
-    def dodaj_sredstvo(self, sredstvo):
-        if sredstvo in SREDSTVA:
-            sredstvo = Prevozno_sredstvo(sredstvo)
-            self.prevozna_sredstva.append(sredstvo)
-            return sredstvo
-        else:
-            print('To sredstvo ne obstaja')
-
+    def dodaj_sredstvo(self, ime):
+        if ime in self.prevozna_sredstva_po_imenih:
+            raise ValueError('Prevozno sredstvo s tem imenom že obstaja!')
+        nov = Prevozno_sredstvo(ime)
+        self.prevozna_sredstva.append(nov)
+        self.prevozna_sredstva_po_imenih[ime] = nov
+        self.poti_po_sredstvih[nov] = []
+        return nov
 
     def izberi_sredstvo(self, sredstvo):
         for i in self.prevozna_sredstva:
@@ -227,16 +231,19 @@ class Stanje:
                 return i
         print('To sredstvo ne obstaja!')
 
-    def dodaj_pot(self, zacetek, konec):
-        try:
-            pot = Pot(zacetek, konec, self.aktualno_sredstvo.ime)
-            self.aktualno_sredstvo.dodaj_pot(pot)
-        except AttributeError:
-            print('Izberi sredstvo!')
+    def dodaj_pot(self, zacetek, konec, sredstvo):
+        self.preveri_sredstvo(sredstvo)
+        nova = Pot(zacetek, konec, sredstvo)
+        self.poti.append(nova)
+        self.poti_po_sredstvih[sredstvo].append(nova)
+        return nova
 
     def izbrisi_pot(self, pot):
         self.aktualno_sredstvo.pobrisi_pot(pot)
 
+
+    def poisci_sredstvo(self, ime):
+        return self.sredstva_po_imenih[ime]
 
     def skupna_razdalja(self):
         d = 0
