@@ -215,12 +215,17 @@ class Stanje:
         if sredstvo in SREDSTVA:
             sredstvo = Prevozno_sredstvo(sredstvo)
             self.prevozna_sredstva.append(sredstvo)
+            return sredstvo
         else:
             print('To sredstvo ne obstaja')
 
 
     def izberi_sredstvo(self, sredstvo):
-        self.aktualno_sredstvo = sredstvo
+        for i in self.prevozna_sredstva:
+            if i.ime == sredstvo:
+                self.aktualno_sredstvo = i
+                return i
+        print('To sredstvo ne obstaja!')
 
     def dodaj_pot(self, zacetek, konec):
         try:
