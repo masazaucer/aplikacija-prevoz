@@ -161,7 +161,6 @@ class Prevozno_sredstvo:
         self.poraba = poraba
         self.poti = []
         self.cena = 0
-        self.izpusti = 0
 
     def skupna_dolzina(self):
         d = 0
@@ -189,9 +188,10 @@ class Prevozno_sredstvo:
         return self.cena
 
     def izpusti_co2(self):
+        izpusti = 0
         for pot in self.poti:
-            self.izpusti += pot.izpusti()
-        return self.izpusti
+            izpusti += pot.izpusti()
+        return izpusti
 
     def dodaj_pot(self, pot):
         self.poti.append(pot)
@@ -209,11 +209,7 @@ class Stanje:
         self.poti = []
         self.aktualno_sredstvo = None
         self.prevozna_sredstva_po_imenih = {}
-        self.poti_po_imenih = {}
         self.poti_po_sredstvih = {}
-        self.razdalja = 0
-        self.cena = 0
-        self.trajanje = 0
 
     def dodaj_sredstvo(self, ime):
         if ime in self.prevozna_sredstva_po_imenih:
@@ -231,6 +227,13 @@ class Stanje:
                 return i
         print('To sredstvo ne obstaja!')
 
+    def odstrani_sredstvo(self, sredstvo):
+        self.preveri_sredstvo(sredstvo)
+        for pot in sredstvo.poti():
+            self.poti_po_sredstvih[None].append(pot)
+        self.prevozna_sredstva.remove(sredstvo)
+        del self.poti_po_sredstvih[sredstvo]
+
     def dodaj_pot(self, zacetek, konec, sredstvo):
         self.preveri_sredstvo(sredstvo)
         nova = Pot(zacetek, konec, sredstvo)
@@ -238,12 +241,17 @@ class Stanje:
         self.poti_po_sredstvih[sredstvo].append(nova)
         return nova
 
-    def izbrisi_pot(self, pot):
-        self.aktualno_sredstvo.pobrisi_pot(pot)
-
 
     def poisci_sredstvo(self, ime):
         return self.sredstva_po_imenih[ime]
+
+    
+    def poti_sredstva(self, sredstvo):
+        yield from self.poti_po_sredstvih[sredstvo]
+
+    def preveri_sredstvo(self, sredstvo):
+        if racun.proracun != self:
+            raise ValueError(f"Račun {racun} ne spada v ta proračun!")
 
     def skupna_razdalja(self):
         d = 0
