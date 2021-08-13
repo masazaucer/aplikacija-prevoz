@@ -245,13 +245,12 @@ class Stanje:
     def poisci_sredstvo(self, ime):
         return self.sredstva_po_imenih[ime]
 
-    
     def poti_sredstva(self, sredstvo):
         yield from self.poti_po_sredstvih[sredstvo]
 
     def preveri_sredstvo(self, sredstvo):
-        if racun.proracun != self:
-            raise ValueError(f"Račun {racun} ne spada v ta proračun!")
+        if sredstvo not in self.prevozna_sredstva:
+            raise ValueError(f'Prevozno sredstvo "{sredstvo.ime}" ne obstaja')
 
     def skupna_razdalja(self):
         d = 0
@@ -276,3 +275,36 @@ class Stanje:
         for sredstvo in self.prevozna_sredstva:
             st += sredstvo.stevilo_poti()
         return st
+
+
+    def v_slovar(self):
+            return {
+                "prevozna sredstva": [
+                    {
+                        "ime": sredstvo.ime,
+                    }
+                    for sredstvo in self.prevozna_sredstva
+                ],
+                "poti": [
+                    {
+                        "začetek": pot.zacetek,
+                        "konec": pot.konec,
+                        "sredstvo": pot.sredstvo,
+                        "datum": str(pot.datum),
+                    }
+                    for pot in self.poti
+                ],
+            }
+
+    def iz_slovarja(cls, slovar):
+        stanje = cls()
+        for sredstvo in slovar["prevozna sredstva"]:
+            novo_sredstvo = stanje.dodaj_sredstvo(sredstvo["ime"])
+
+        for pot in slovar["poti"]:
+            stanje.dodaj_pot(
+                pot["začetek"],
+                pot["konec"],
+                pot["sredstvo"],
+            )
+        return stanje
