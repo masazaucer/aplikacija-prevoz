@@ -3,6 +3,7 @@ import googlemaps
 import json
 import requests
 import math
+from datetime import date
 
 CENA_NA_KM = 8*1.268/100 #€/l
 CO2_NA_KM_AVTO = 180 #g/km
@@ -26,8 +27,10 @@ map_client = googlemaps.Client(API_KEY)
 zacetni_url = "https://maps.googleapis.com/maps/api/distancematrix/json?units=metric"
 
 class Uporabnik:
-    def __init__(self, ime):
-        self.ime = ime
+    def __init__(self, uporabnisko_ime, zasifrirano_geslo, stanje):
+        self.uporabnisko_ime = uporabnisko_ime
+        self.zasifrirano_geslo = zasifrirano_geslo
+        self.stanje = stanje
         self.pomembnost_casa = None
         self.pomembnost_onesnazevanja = None
     
@@ -75,6 +78,7 @@ class Pot:
         self.zacetek = zacetek
         self.konec = konec
         self.sredstvo = sredstvo
+        self.datum = date.today()
 
     def __str__(self):
         return f'Pot({self.zacetek}, {self.konec}, {self.sredstvo}, {self.cena}€)'
@@ -153,6 +157,8 @@ class Pot:
                     min = i
         return optimalna
 
+    def spremeni_datum(self, dan, mesec, leto):
+        self.datum = date(leto, mesec, dan)
 
 
 class Prevozno_sredstvo:
