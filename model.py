@@ -275,6 +275,12 @@ class Stanje:
             st += sredstvo.stevilo_poti()
         return st
 
+    def optimalne_poti(self):
+        optimalne = []
+        for pot in self.poti:
+            optimalne.append(pot.optimalna_pot(uporabnik.preferenca_cas, uporabnik.preferenca_onesnazevanje))
+
+
 
     def v_slovar(self):
             return {
