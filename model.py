@@ -308,3 +308,14 @@ class Stanje:
                 pot["sredstvo"],
             )
         return stanje
+
+
+    def shrani_stanje(self, ime_dat):
+        with open(ime_dat, "w") as dat:
+            json.dump(self.slovar_s_stanjem(), dat, ensure_ascii=False, indent=4)
+
+
+    def nalozi_stanje(cls, ime_dat):
+        with open(ime_dat) as dat:
+            slovar_s_stanjem = json.load(dat)
+        return cls.iz_slovarja(slovar_s_stanjem)
