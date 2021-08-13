@@ -165,7 +165,7 @@ class Prevozno_sredstvo:
     def skupna_dolzina(self):
         d = 0
         for pot in self.poti:
-            d += pot.razdalja()
+            d += pot.razdalja()['razdalja']
         return d
     
     def skupno_trajanje(self):
@@ -235,22 +235,21 @@ class Stanje:
         del self.poti_po_sredstvih[sredstvo]
 
     def dodaj_pot(self, zacetek, konec, sredstvo):
-        self.preveri_sredstvo(sredstvo)
-        nova = Pot(zacetek, konec, sredstvo)
-        self.poti.append(nova)
-        self.poti_po_sredstvih[sredstvo].append(nova)
-        return nova
+        if sredstvo in self.prevozna_sredstva_po_imenih:
+            nova = Pot(zacetek, konec, sredstvo)
+            self.poti.append(nova)
+            self.poti_po_sredstvih[self.prevozna_sredstva_po_imenih[sredstvo]].append(nova)
+            self.prevozna_sredstva_po_imenih[sredstvo].dodaj_pot(nova)
+            return nova
+        else:
+            raise ValueError(f'Prevozno sredstvo "{sredstvo}" ne obstaja')
 
 
     def poisci_sredstvo(self, ime):
-        return self.sredstva_po_imenih[ime]
+        return self.prevozna_sredstva_po_imenih[ime]
 
     def poti_sredstva(self, sredstvo):
         yield from self.poti_po_sredstvih[sredstvo]
-
-    def preveri_sredstvo(self, sredstvo):
-        if sredstvo not in self.prevozna_sredstva:
-            raise ValueError(f'Prevozno sredstvo "{sredstvo.ime}" ne obstaja')
 
     def skupna_razdalja(self):
         d = 0
