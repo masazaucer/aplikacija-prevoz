@@ -1,5 +1,6 @@
 import bottle
 from model import Stanje, Uporabnik, Prevozno_sredstvo, Pot
+from datetime import date
 
 DATOTEKA_S_STANJEM = "stanje.json"
 
@@ -8,13 +9,16 @@ try:
 except FileNotFoundError:
     stanje = Stanje()
 
+def poisci_sredstvo(stanje, ime_polja):
+    ime_sredstva = bottle.request.forms.getunicode(ime_polja)
+    return stanje.poisci_sredstvo(ime_sredstva or None)
+
 @bottle.get("/")
 def osnovna_stran():
     bottle.redirect("/stanje/")
 
 @bottle.get("/stanje/")
 def nacrtovanje_stanja():
-    stanje = Stanje()
     return bottle.template("stanje.tpl", sredstva=stanje.prevozna_sredstva, poti=stanje.poti)
 
 @bottle.get("/poti/")
@@ -28,6 +32,22 @@ def analiza():
 @bottle.get("/pomoc/")
 def pomoc():
     return bottle.template("pomoc.tpl")
+
+@bottle.post("/dodaj-sredstvo/")
+def dodaj_sredstvo():
+    stanje.dodaj_sredstvo(bottle.request.forms.getunicode("ime"))
+#    shrani_stanje()
+    bottle.redirect("/")
+
+@bottle.post("/dodaj-pot/")
+def dodaj_pot():
+    zacetek = bottle.request.forms.getunicode("zacetek")
+    konec = bottle.request.forms.getunicode("konec")
+    datum = date.today().strftime("%Y-%m-%d")
+    sredstvo = poisci_sredstvo(stanje, "sredstvo")
+    stanje.dodaj_pot(zacetek, konec, sredstvo, datum)
+#    shrani_stanje()
+    bottle.redirect("/")
 
 
 bottle.run(reloader=True, debug=True)
