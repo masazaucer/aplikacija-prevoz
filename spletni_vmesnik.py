@@ -10,6 +10,24 @@ except FileNotFoundError:
 
 @bottle.get("/")
 def osnovna_stran():
-    return bottle.template('osnovna_stran.tpl', sredstva=stanje.prevozna_sredstva, poti=stanje.poti)
+    bottle.redirect("/stanje/")
+
+@bottle.get("/stanje/")
+def nacrtovanje_stanja():
+    stanje = Stanje()
+    return bottle.template("stanje.tpl", sredstva=stanje.prevozna_sredstva, poti=stanje.poti)
+
+@bottle.get("/poti/")
+def poti():
+    return bottle.template("poti.tpl")
+
+@bottle.get("/analiza/")
+def analiza():
+    return bottle.template("analiza.tpl")
+
+@bottle.get("/pomoc/")
+def pomoc():
+    return bottle.template("pomoc.tpl")
+
 
 bottle.run(reloader=True, debug=True)
