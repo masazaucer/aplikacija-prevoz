@@ -4,6 +4,8 @@ import json
 import requests
 import math
 from datetime import date
+import hashlib
+import random
 
 CENA_NA_KM = 8*1.268/100 #€/l
 CO2_NA_KM_AVTO = 180 #g/km
@@ -306,11 +308,11 @@ class Stanje:
                     for pot in self.poti
                 ],
             }
-
+    @staticmethod
     def iz_slovarja(cls, slovar):
         stanje = cls()
         for sredstvo in slovar["prevozna sredstva"]:
-            novo_sredstvo = stanje.dodaj_sredstvo(sredstvo["ime"])
+            stanje.dodaj_sredstvo(sredstvo["ime"])
 
         for pot in slovar["poti"]:
             stanje.dodaj_pot(
@@ -319,14 +321,14 @@ class Stanje:
                 pot["sredstvo"],
             )
         return stanje
+        
 
+    def shrani_stanje(self, ime_datoteke):
+        with open(ime_datoteke, "w") as datoteka:
+            json.dump(self.v_slovar(), datoteka, ensure_ascii=False, indent=4)
 
-    def shrani_stanje(self, ime_dat):
-        with open(ime_dat, "w") as dat:
-            json.dump(self.slovar_s_stanjem(), dat, ensure_ascii=False, indent=4)
-
-
-    def nalozi_stanje(cls, ime_dat):
-        with open(ime_dat) as dat:
-            slovar_s_stanjem = json.load(dat)
+    @classmethod
+    def nalozi_stanje(cls, ime_datoteke):
+        with open(ime_datoteke) as datoteka:
+            slovar_s_stanjem = json.load(datoteka)
         return cls.iz_slovarja(slovar_s_stanjem)
