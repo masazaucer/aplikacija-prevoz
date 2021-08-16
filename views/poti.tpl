@@ -1,0 +1,75 @@
+% rebase('base.tpl')
+%from datetime import date
+
+<form action='/dodaj-pot/' method="POST">
+
+          <div class="row">
+            <div class="input-field col s4">
+                <i class="material-icons prefix">keyboard_arrow_right</i>
+                <input id="zacetek" type="text" class="validate" name="zacetek">
+                <label for="zacetek">Začetek</label>
+            </div>
+            <div class="input-field col s4">
+                <i class="material-icons prefix">keyboard_arrow_left</i>
+                <input id="konec" type="text" class="validate" name="konec">
+                <label for="konec">Konec</label>
+            </div>
+          </div>
+          <div class="row">
+            <div class="input-field col s4">
+                <i class="material-icons prefix">today</i>
+                <input type="text" class="datepicker" id='date' name="datum" defaultDate='date.today()' setDefaultDate='True'>
+                <label for="date">Datum</label>
+            </div>
+            <div class="input-field col s4">
+                <i class="material-icons prefix">directions_car</i>
+                <input class="validate" id='sredstvo' name='sredstvo'>
+                <select>
+                    <option value="" disabled selected>Choose your option</option>
+                    <option value="1">Option 1</option>
+                    <option value="2">Option 2</option>
+                    <option value="3">Option 3</option>
+                </select>
+                <label for="sredstvo">Sredstvo</label>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="input-field col s4">
+                <input type='submit' value="dodaj">
+            </div>
+          </div>
+
+
+
+</form>
+
+
+<table class="striped">
+    <thead>
+      <tr>
+          <th>Začetek</th>
+          <th>Konec</th>
+          <th>Sredstvo</th>
+          <th>Datum</th>
+          <th>Razdalja</th>
+          <th>Trajanje</th>
+          <th>Cena</th>
+          <th>Izpusti</th>
+      </tr>
+    </thead>
+
+    <tbody>
+    % for pot in stanje.poti:
+      <tr>
+        <th>{{pot.zacetek}}</th>
+        <th>{{pot.konec}}</th>
+        <th>{{pot.sredstvo}}</th>
+        <th>{{pot.datum}}</th>
+        <th>{{pot.razdalja}}</th>
+        <th>{{pot.trajanje}}</th>
+        <th>{{pot.cena}}</th>
+        <th>{{pot.izracunaj_izpuste}}</th>
+      </tr>
+    </tbody>
+  </table>

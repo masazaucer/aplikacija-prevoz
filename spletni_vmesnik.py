@@ -23,7 +23,7 @@ def nacrtovanje_stanja():
 
 @bottle.get("/poti/")
 def poti():
-    return bottle.template("poti.tpl")
+    return bottle.template("poti.tpl", stanje=stanje)
 
 @bottle.get("/analiza/")
 def analiza():
@@ -43,11 +43,26 @@ def dodaj_sredstvo():
 def dodaj_pot():
     zacetek = bottle.request.forms.getunicode("zacetek")
     konec = bottle.request.forms.getunicode("konec")
-    datum = date.today().strftime("%Y-%m-%d")
-    sredstvo = poisci_sredstvo(stanje, "sredstvo")
+    datum = bottle.request.forms.getunicode("datum")
+    ime_sredstva = bottle.request.forms.getunicode("sredstvo")
+    sredstvo = poisci_sredstvo(stanje, ime_sredstva)
     stanje.dodaj_pot(zacetek, konec, sredstvo, datum)
 #    shrani_stanje()
+    bottle.redirect("/poti/")
+
+"""
+@bottle.post("/pomembnost-casa/")
+def pomembnost_casa():
+    pomembnost = bottle.request.forms.getunicode("pomembnost_casa")
+    uporabnik.nastavi_pomembnost_casa(pomembnost)
     bottle.redirect("/")
+
+@bottle.post("/pomembnost-onesnazevanja/")
+def pomembnost_onesnazevanja():
+    pomembnost = bottle.request.forms.getunicode("pomembnost_onesnazevanja")
+    uporabnik.nastavi_pomembnost_onesnazevanja(pomembnost)
+    bottle.redirect("/")
+"""
 
 
 bottle.run(reloader=True, debug=True)
