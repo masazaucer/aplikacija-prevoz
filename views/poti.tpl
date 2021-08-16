@@ -1,27 +1,27 @@
 % rebase('base.tpl')
 %from datetime import date
 
-<form action='/dodaj-pot/' method="POST">
+        <form action='/dodaj-pot/' method="POST">
 
           <div class="row">
-            <div class="input-field col s4">
+            <div class="input-field col s6">
                 <i class="material-icons prefix">keyboard_arrow_right</i>
                 <input id="zacetek" type="text" class="validate" name="zacetek">
                 <label for="zacetek">Začetek</label>
             </div>
-            <div class="input-field col s4">
+            <div class="input-field col s6">
                 <i class="material-icons prefix">keyboard_arrow_left</i>
                 <input id="konec" type="text" class="validate" name="konec">
                 <label for="konec">Konec</label>
             </div>
           </div>
           <div class="row">
-            <div class="input-field col s4">
+            <div class="input-field col s6">
                 <i class="material-icons prefix">today</i>
                 <input type="text" class="datepicker" id='date' name="datum" defaultDate='date.today()' setDefaultDate='True'>
                 <label for="date">Datum</label>
             </div>
-            <div class="input-field col s4">
+            <div class="input-field col s6">
                 <i class="material-icons prefix">directions_car</i>
                 <input class="validate" id='sredstvo' name='sredstvo'>
                 <select>
@@ -35,17 +35,19 @@
           </div>
 
           <div class="row">
-            <div class="input-field col s4">
-                <input type='submit' value="dodaj">
+            <div class="input-field col s12">
+                <div class='center'>
+                    <button class="btn waves-effect waves-light" type="submit" name="action">Dodaj
+                        <i class="material-icons right">add</i>
+                    </button>
+                </div>
             </div>
           </div>
-
-
-
-</form>
+        </form>
 
 
 <table class="striped">
+    <h2><strong>Tvoje poti:</strong></h2>
     <thead>
       <tr>
           <th>Začetek</th>
