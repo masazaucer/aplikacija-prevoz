@@ -17,19 +17,7 @@
       </div>
     </div>
   </div>
-<div class="row">
-    <form action="/dodaj-sredstvo/" method="POST">
-        <div class="input-field col s12">
-            <select>
-            <option value="" disabled selected>Choose your option</option>
-            <option value="1">Option 1</option>
-            <option value="2">Option 2</option>
-            <option value="3">Option 3</option>
-            </select>
-            <label>Materialize Select</label>
-        </div>
-    </form>
-</div>
+
 
 <div class="row">
     <div class="col s12 m5">
@@ -70,6 +58,7 @@
             </label>
           </p>
           </input>
+          <input type="submit" value="ok"/>
       </form>
       </div>
     </div>
@@ -79,4 +68,5 @@
             <i class="material-icons right">add</i>
           </button>
         </form>
+
         

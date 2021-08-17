@@ -1,6 +1,7 @@
 import bottle
 from model import Stanje, Uporabnik, Prevozno_sredstvo, Pot
 from datetime import date
+from model import Uporabnik
 
 DATOTEKA_S_STANJEM = "stanje.json"
 
@@ -16,13 +17,28 @@ def poisci_sredstvo(stanje, ime_polja):
     except KeyError:
         return None
 
+@bottle.get("/registracija/")
+def registracija_get():
+    return bottle.template("registracija.tpl", napaka=None)
+
+@bottle.post("/registracija/")
+def registracija_post():
+    username = bottle.request.forms.getunicode("username")
+    password = bottle.request.forms.getunicode("password")
+    print("uspesno")
+    bottle.redirect("/")
+
+@bottle.get("/prijava/")
+def prijava_get():
+    return bottle.template("prijava.tpl", napaka=None)
+
 @bottle.get("/")
 def osnovna_stran():
     bottle.redirect("/stanje/")
 
 @bottle.get("/stanje/")
 def nacrtovanje_stanja():
-    return bottle.template("stanje.tpl", sredstva=stanje.prevozna_sredstva, poti=stanje.poti)
+    return bottle.template("stanje.tpl", stanje=stanje, poti=stanje.poti, sredstva=stanje.prevozna_sredstva)
 
 @bottle.get("/poti/")
 def poti():
@@ -52,7 +68,7 @@ def dodaj_pot():
     stanje.dodaj_pot(zacetek, konec, ime_sredstva, datum)
 #    shrani_stanje()
     bottle.redirect("/poti/")
-
+     
 
 @bottle.get('/analiza/<ime_sredstva>/')
 def prikazi_sredstvo(ime_sredstva):
@@ -62,19 +78,19 @@ def prikazi_sredstvo(ime_sredstva):
         sredstvo = stanje.poisci_sredstvo(ime_sredstva)
         return bottle.template('prikazi_sredstvo.tpl', sredstvo=sredstvo)
 
-"""
+
+
 @bottle.post("/pomembnost-casa/")
 def pomembnost_casa():
     pomembnost = bottle.request.forms.getunicode("pomembnost_casa")
-    uporabnik.nastavi_pomembnost_casa(pomembnost)
+    print(pomembnost)
     bottle.redirect("/")
-
+"""
 @bottle.post("/pomembnost-onesnazevanja/")
 def pomembnost_onesnazevanja():
     pomembnost = bottle.request.forms.getunicode("pomembnost_onesnazevanja")
     uporabnik.nastavi_pomembnost_onesnazevanja(pomembnost)
     bottle.redirect("/")
 """
-
 
 bottle.run(reloader=True, debug=True)
