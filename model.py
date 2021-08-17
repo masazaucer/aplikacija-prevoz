@@ -318,8 +318,8 @@ class Stanje:
     def poisci_sredstvo(self, ime):
         return self.prevozna_sredstva_po_imenih[ime]
 
-    def poti_sredstva(self, sredstvo):
-        yield from self.poti_po_sredstvih[sredstvo]
+    def poti_sredstva(self, ime):
+        yield from self.poti_po_sredstvih[self.poisci_sredstvo(ime)]
 
     def skupna_razdalja(self):
         d = 0
@@ -337,6 +337,12 @@ class Stanje:
         c = 0
         for sredstvo in self.prevozna_sredstva:
             c += sredstvo.skupna_cena_sredstva()
+        return c
+
+    def skupni_izpusti(self):
+        c = 0
+        for sredstvo in self.prevozna_sredstva:
+            c += sredstvo.izpusti_co2()
         return c
 
     def stevilo_poti(self):
