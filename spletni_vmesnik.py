@@ -10,8 +10,11 @@ except FileNotFoundError:
     stanje = Stanje()
 
 def poisci_sredstvo(stanje, ime_polja):
-    ime_sredstva = bottle.request.forms.getunicode(ime_polja)
-    return stanje.poisci_sredstvo(ime_sredstva or None)
+    try:
+        ime_sredstva = bottle.request.forms.getunicode(ime_polja)
+        return stanje.poisci_sredstvo(ime_sredstva)
+    except KeyError:
+        return None
 
 @bottle.get("/")
 def osnovna_stran():
@@ -27,7 +30,7 @@ def poti():
 
 @bottle.get("/analiza/")
 def analiza():
-    return bottle.template("analiza.tpl")
+    return bottle.redirect("/analiza/skupno/")
 
 @bottle.get("/pomoc/")
 def pomoc():
@@ -45,10 +48,19 @@ def dodaj_pot():
     konec = bottle.request.forms.getunicode("konec")
     datum = bottle.request.forms.getunicode("datum")
     ime_sredstva = bottle.request.forms.getunicode("sredstvo")
-    sredstvo = poisci_sredstvo(stanje, ime_sredstva)
-    stanje.dodaj_pot(zacetek, konec, sredstvo, datum)
+    sredstvo = poisci_sredstvo(stanje, "sredstvo")
+    stanje.dodaj_pot(zacetek, konec, ime_sredstva, datum)
 #    shrani_stanje()
     bottle.redirect("/poti/")
+
+
+@bottle.get('/analiza/<ime_sredstva>/')
+def prikazi_sredstvo(ime_sredstva):
+    if ime_sredstva == 'skupno':
+        return bottle.template('prikazi_skupno_stanje.tpl')
+    else:
+        sredstvo = stanje.poisci_sredstvo(ime_sredstva)
+        return bottle.template('prikazi_sredstvo.tpl', sredstvo=sredstvo)
 
 """
 @bottle.post("/pomembnost-casa/")
