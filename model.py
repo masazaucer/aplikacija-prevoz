@@ -36,6 +36,71 @@ class Uporabnik:
         self.pomembnost_casa = None
         self.pomembnost_onesnazevanja = None
     
+    @staticmethod
+    def prijava(uporabnisko_ime, geslo_v_cistopisu):
+        uporabnik = Uporabnik.iz_datoteke(uporabnisko_ime)
+        if uporabnik is None:
+            raise ValueError("Uporabniško ime ne obstaja")
+        elif uporabnik.preveri_geslo(geslo_v_cistopisu):
+            return uporabnik        
+        else:
+            raise ValueError("Geslo je napačno")
+
+    @staticmethod
+    def registracija(uporabnisko_ime, geslo_v_cistopisu):
+        if Uporabnik.iz_datoteke(uporabnisko_ime) is not None:
+            raise ValueError("Uporabniško ime že obstaja")
+        else:
+            zasifrirano_geslo = Uporabnik._zasifriraj_geslo(geslo_v_cistopisu)
+            uporabnik = Uporabnik(uporabnisko_ime, zasifrirano_geslo, Proracun())
+            uporabnik.v_datoteko()
+            return uporabnik
+
+    def _zasifriraj_geslo(geslo_v_cistopisu, sol=None):
+        if sol is None:
+            sol = str(random.getrandbits(32))
+        posoljeno_geslo = sol + geslo_v_cistopisu
+        h = hashlib.blake2b()
+        h.update(posoljeno_geslo.encode(encoding="utf-8"))
+        return f"{sol}${h.hexdigest()}"
+
+
+    def v_slovar(self):
+        return {
+            "uporabnisko_ime": self.uporabnisko_ime,
+            "zasifrirano_geslo": self.zasifrirano_geslo,
+            "proracun": self.proracun.v_slovar(),
+        }
+
+    def v_datoteko(self):
+        with open(
+            Uporabnik.ime_uporabnikove_datoteke(self.uporabnisko_ime), "w"
+        ) as datoteka:
+            json.dump(self.v_slovar(), datoteka, ensure_ascii=False, indent=4)
+
+    def preveri_geslo(self, geslo_v_cistopisu):
+        sol, _ = self.zasifrirano_geslo.split("$")
+        return self.zasifrirano_geslo == Uporabnik._zasifriraj_geslo(geslo_v_cistopisu, sol)
+
+    @staticmethod
+    def ime_uporabnikove_datoteke(uporabnisko_ime):
+        return f"{uporabnisko_ime}.json"
+
+    @staticmethod
+    def iz_slovarja(slovar):
+        uporabnisko_ime = slovar["uporabnisko_ime"]
+        zasifrirano_geslo = slovar["zasifrirano_geslo"]
+        stanje = Stanje.iz_slovarja(slovar["proracun"])
+        return Uporabnik(uporabnisko_ime, zasifrirano_geslo, stanje)
+
+    @staticmethod
+    def iz_datoteke(uporabnisko_ime):
+        try:
+            with open(Uporabnik.ime_uporabnikove_datoteke(uporabnisko_ime)) as datoteka:
+                slovar = json.load(datoteka)
+                return Uporabnik.iz_slovarja(slovar)
+        except FileNotFoundError:
+            return None
 
     def nastavi_pomembnost_casa(self, vrednost):
         if vrednost == 'zelo':
@@ -76,21 +141,21 @@ def indeks(trajanje, izpusti, cena, preferenca_cas=None, preferenca_onesnazevanj
 
 
 class Pot:
-    def __init__(self, zacetek, konec, sredstvo):
+    def __init__(self, zacetek, konec, sredstvo, datum):
         self.zacetek = zacetek
         self.konec = konec
         self.sredstvo = sredstvo
-        self.datum = date.today()
+        self.datum = datum
 
     def __str__(self):
-        return f'Pot({self.zacetek}, {self.konec}, {self.sredstvo}, {self.cena}€)'
+        return f'Pot({self.zacetek}, {self.konec}, {self.sredstvo}, {self.datum})'
 
     #sestavi url za klic distance matrice preko API
     def url(self):
-        if self.sredstvo == 'train' or self.sredstvo == 'bus':
+        if self.sredstvo == 'vlak' or self.sredstvo == 'bus':
             u = zacetni_url + "&origins=" + self.zacetek + "&destinations=" + self.konec + "&mode=transiting&transit_mode=" + self.sredstvo + "&key=" + API_KEY
             return u
-        elif self.sredstvo == 'walking' or self.sredstvo == 'bicycling':
+        elif self.sredstvo == 'hoja' or self.sredstvo == 'kolo':
             u = zacetni_url + "&origins=" + self.zacetek + "&destinations=" + self.konec + "&mode=walking&key=" + API_KEY
             return u
         else:
@@ -113,7 +178,7 @@ class Pot:
     def trajanje(self):
         try:
             output = requests.get(self.url()).json()
-            if self.sredstvo == 'bicycling':
+            if self.sredstvo == 'kolo':
                 return (output["rows"][0]["elements"][0]["duration"]["value"]) / 5
             else:
                 return output["rows"][0]["elements"][0]["duration"]["value"]
@@ -122,9 +187,9 @@ class Pot:
 
     #izračuna dejansko ceno poti(gorivo, stroški uporabe avtomobila, približna ocena cene vozovnic na kilometer prepotovane poti z vlakom/busom)
     def cena(self):
-        if self.sredstvo == 'driving':
+        if self.sredstvo == 'avto':
             c = STROSEK_AVTOMOBILA_NA_KM * self.razdalja()["razdalja"] / 1000
-        elif self.sredstvo == 'bus' or self.sredstvo == 'train':
+        elif self.sredstvo == 'bus' or self.sredstvo == 'vlak':
             c = CENA_VLAK_NA_KM * self.razdalja()["razdalja"] / 1000
         else:
             c = 0
@@ -133,9 +198,9 @@ class Pot:
 
     #izračuna količino izpustov CO2, proizvedenih s potjo v tonah
     def izracunaj_izpuste(self):
-        if self.sredstvo == "driving":
+        if self.sredstvo == "avto":
             return self.razdalja()["razdalja"] * CO2_NA_KM_AVTO * 10 **(-9)
-        elif self.sredstvo == "train":
+        elif self.sredstvo == "vlak":
             return self.razdalja()["razdalja"] * CO2_NA_KM_VLAK * 10 **(-9)
         elif self.sredstvo == "bus":
             return self.razdalja()["razdalja"] * CO2_NA_KM_BUS * 10 **(-9)
@@ -148,7 +213,7 @@ class Pot:
         min = math.inf
         for sredstvo in SREDSTVA:
             
-            pot = Pot(self.zacetek, self.konec, sredstvo)
+            pot = Pot(self.zacetek, self.konec, sredstvo, self.datum)
             if not pot:
                 continue
             else:
@@ -228,23 +293,20 @@ class Stanje:
         self.poti_po_sredstvih[nov] = []
         return nov
 
-    def izberi_sredstvo(self, sredstvo):
-        for i in self.prevozna_sredstva:
-            if i.ime == sredstvo:
-                self.aktualno_sredstvo = i
-                return i
-        print('To sredstvo ne obstaja!')
+    def odstrani_sredstvo(self, ime):
+        if ime in self.prevozna_sredstva_po_imenih:
+            sredstvo = self.prevozna_sredstva_po_imenih[ime]
+            for pot in sredstvo.poti:
+                self.poti_po_sredstvih[None].append(pot)
+            self.prevozna_sredstva.remove(sredstvo)
+            del self.poti_po_sredstvih[sredstvo]
+            del self.prevozna_sredstva_po_imenih[ime]
+        else:
+            return None
 
-    def odstrani_sredstvo(self, sredstvo):
-        self.preveri_sredstvo(sredstvo)
-        for pot in sredstvo.poti():
-            self.poti_po_sredstvih[None].append(pot)
-        self.prevozna_sredstva.remove(sredstvo)
-        del self.poti_po_sredstvih[sredstvo]
-
-    def dodaj_pot(self, zacetek, konec, sredstvo):
+    def dodaj_pot(self, zacetek, konec, sredstvo, datum):
         if sredstvo in self.prevozna_sredstva_po_imenih:
-            nova = Pot(zacetek, konec, sredstvo)
+            nova = Pot(zacetek, konec, sredstvo, datum)
             self.poti.append(nova)
             self.poti_po_sredstvih[self.prevozna_sredstva_po_imenih[sredstvo]].append(nova)
             self.prevozna_sredstva_po_imenih[sredstvo].dodaj_pot(nova)
