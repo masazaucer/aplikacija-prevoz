@@ -1,42 +1,82 @@
-<!DOCTYPE html>
-<html lang="sl">
-<head>
-    <meta charset="utf-8">
-    <title>osnovna_stran</title>
-</head>
+% rebase('base.tpl')
 
-<body>
-    <h1>Prevozi</h1>
-    <h2>Tvoja prevozna sredstva:</h2>
-    <ul>
-        % for sredstvo in sredstva:
-        <li>{{ sredstvo.ime }}</li>
-        % end
-    </ul>
-
+<div class="row">
+    <div class="col s12 m5">
+      <div class="card-panel teal">
+        <form action="/dodaj-sredstvo/" method="POST">
+            <div class="input-field col s12">
+                <select>
+                <option value="" disabled selected>Choose your option</option>
+                <option value="1">Option 1</option>
+                <option value="2">Option 2</option>
+                <option value="3">Option 3</option>
+                </select>
+                <label>Materialize Select</label>
+            </div>
+        </form>
+      </div>
+    </div>
+  </div>
+<div class="row">
     <form action="/dodaj-sredstvo/" method="POST">
-        <input type="text" name='dodaj_sredstvo'>
-        <input type='submit' value="dodaj">
+        <div class="input-field col s12">
+            <select>
+            <option value="" disabled selected>Choose your option</option>
+            <option value="1">Option 1</option>
+            <option value="2">Option 2</option>
+            <option value="3">Option 3</option>
+            </select>
+            <label>Materialize Select</label>
+        </div>
     </form>
+</div>
 
-    <h2>Tvoje poti:</h2>
-    <ul>
-        % for pot in poti:
-        <li>začetek: {{ pot.zacetek }}, konec: {{ pot.konec }}, zardalja: {{ pot.razdalja() }}, trajanje: {{ pot.trajanje() }}</li>
-        % end
-    </ul>
+<div class="row">
+    <div class="col s12 m5">
+      <div class="card-panel teal">
+        <h2>Tvoja sredstva:</h2>
+        <ul>
+            % for sredstvo in sredstva:
+            <li>sredstvo: {{ sredstvo.ime }}</li>
+            % end
+        </ul>
+        <form action="/dodaj-sredstvo/" method="POST">
+            <input type="text" name='ime'>
+            <input type='submit' value="dodaj">
+        </form>
+      </div>
+    </div>
 
-    <form action="/dodaj-pot/" method="POST">
-        <input type="text" name='dodaj_pot'>
-        <input type='submit' value="dodaj">
-    </form>
-
-    <form action="/analiza/" method="GET">
-        <input type="button" name='analiza'>
-    </form>
-
-    <form action="/pomoc/" method="GET">
-        <input type="button" name='pomoc'>
-    </form>
-</body>
-</html>
+    <div class="col s12 m5">
+      <div class="card-panel teal">
+        <form action='/pomembnost-casa/' method="POST">
+          <input type="checkbox" name="pomembnost_casa">
+          <p>
+            <label>
+              <input class="with-gap" name="group1" type="radio" />
+              <span>Zelo</span>
+            </label>
+          </p>
+          <p>
+            <label>
+              <input class="with-gap" name="group1" type="radio" />
+              <span>Srednje</span>
+            </label>
+          </p>
+          <p>
+            <label>
+              <input class="with-gap" name="group1" type="radio"  />
+              <span>Malo</span>
+            </label>
+          </p>
+          </input>
+      </form>
+      </div>
+    </div>
+  </div>
+        <form action="/poti/" method="GET">
+          <button class="btn waves-effect waves-light" type="submit" name="action">Dodaj pot
+            <i class="material-icons right">add</i>
+          </button>
+        </form>
+        
