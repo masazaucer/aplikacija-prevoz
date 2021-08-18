@@ -1,5 +1,4 @@
 % rebase('base.tpl')
-%from datetime import date
 
 <form action='/dodaj-pot/' method="POST">
   <div class='row'></div>
@@ -21,17 +20,36 @@
         <input type="text" class="datepicker" id='date' name="datum" defaultDate='date.today()' setDefaultDate='True'>
         <label for="date">Datum</label>
     </div>
-    <div class="input-field col s6">
+    
+      <div class="input-field col s6">
         <i class="material-icons prefix">directions_car</i>
-        <input class="validate" id='sredstvo' name='sredstvo'>
+        
         <select>
-            <option value="" disabled selected>Choose your option</option>
-            <option value="1">Option 1</option>
-            <option value="2">Option 2</option>
-            <option value="3">Option 3</option>
+          <option value="" disabled selected><p style="color:grey">Sredstvo</p></option>
+          <option value="avto">Avto<i class="material-icons">directions_car</i></option>
+          <option value="hoja">Hoja<i class="material-icons">directions_walk</i></option>
+          <option value="javni_prevoz">Javni prevoz<i class="material-icons">directions_transit</i></option>
+          <option value="kolo">Kolo<i class="material-icons">directions_bike</i></option>
+     
         </select>
-        <label for="sredstvo">Sredstvo</label>
-    </div>
+        
+        
+
+        
+      </div>
+    
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+       <!-- Compiled and minified JavaScript -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-alpha.4/js/materialize.min.js"></script>
+             
+    <script>
+    (function($){
+      $(function(){
+        // Plugin initialization
+        $('select').not('.disabled').formSelect();
+      }); 
+    })(jQuery); // end of jQuery name space
+    </script>
   </div>
 
   <div class="row">
