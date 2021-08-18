@@ -229,9 +229,8 @@ class Pot:
 
 
 class Prevozno_sredstvo:
-    def __init__(self, ime, poraba=0):
+    def __init__(self, ime):
         self.ime = ime
-        self.poraba = poraba
         self.poti = []
         self.cena = 0
 
@@ -387,6 +386,7 @@ class Stanje:
                 pot["začetek"],
                 pot["konec"],
                 pot["sredstvo"],
+                pot["datum"]
             )
         return stanje
         
