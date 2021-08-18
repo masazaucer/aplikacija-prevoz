@@ -235,6 +235,7 @@ class Prevozno_sredstvo:
     def __init__(self, ime):
         self.ime = ime
         self.poti = []
+        self.optimalne = []
         self.cena = 0
 
     def skupna_dolzina(self):
@@ -268,8 +269,10 @@ class Prevozno_sredstvo:
             izpusti += pot.izpusti()
         return izpusti
 
+#dodaj preferenco
     def dodaj_pot(self, pot):
         self.poti.append(pot)
+        self.optimalne.append(pot.optimalna_pot())
 
     def odstrani_pot(self, pot):
         self.poti.remove(pot)
@@ -282,9 +285,10 @@ class Stanje:
     def __init__(self):
         self.prevozna_sredstva = []
         self.poti = []
-        self.aktualno_sredstvo = None
+        self.optimalne = []
         self.prevozna_sredstva_po_imenih = {}
         self.poti_po_sredstvih = {}
+        self.optimalne_po_sredstvih = {}
 
     def dodaj_sredstvo(self, ime):
         if ime in self.prevozna_sredstva_po_imenih:
@@ -306,11 +310,14 @@ class Stanje:
         else:
             return None
 
+# treba je vključiti še preference
     def dodaj_pot(self, zacetek, konec, sredstvo, datum):
         if sredstvo in self.prevozna_sredstva_po_imenih:
             nova = Pot(zacetek, konec, sredstvo, datum)
             self.poti.append(nova)
+            self.optimalne.append(nova.optimalna_pot())
             self.poti_po_sredstvih[self.prevozna_sredstva_po_imenih[sredstvo]].append(nova)
+            self.optimalne_po_sredstvih[self.prevozna_sredstva_po_imenih[sredstvo]].append(nova.optimalna_pot())
             self.prevozna_sredstva_po_imenih[sredstvo].dodaj_pot(nova)
             return nova
         else:
