@@ -37,10 +37,15 @@ class Uporabnik:
         self.pomembnost_onesnazevanja = None
     
     @staticmethod
+    def ime_uporabnikove_datoteke(uporabnisko_ime):
+        return f"{uporabnisko_ime}.json"
+
+
+    @staticmethod
     def prijava(uporabnisko_ime, geslo_v_cistopisu):
         uporabnik = Uporabnik.iz_datoteke(uporabnisko_ime)
         if uporabnik is None:
-            raise ValueError("Uporabniško ime ne obstaja")
+            raise ValueError("Uporabniško ime ne obstaja!")
         elif uporabnik.preveri_geslo(geslo_v_cistopisu):
             return uporabnik        
         else:
@@ -52,7 +57,7 @@ class Uporabnik:
             raise ValueError("Uporabniško ime že obstaja")
         else:
             zasifrirano_geslo = Uporabnik._zasifriraj_geslo(geslo_v_cistopisu)
-            uporabnik = Uporabnik(uporabnisko_ime, zasifrirano_geslo, Proracun())
+            uporabnik = Uporabnik(uporabnisko_ime, zasifrirano_geslo, Stanje())
             uporabnik.v_datoteko()
             return uporabnik
 
@@ -64,34 +69,30 @@ class Uporabnik:
         h.update(posoljeno_geslo.encode(encoding="utf-8"))
         return f"{sol}${h.hexdigest()}"
 
+    def preveri_geslo(self, geslo_v_cistopisu):
+        sol, _ = self.zasifrirano_geslo.split("$")
+        return self.zasifrirano_geslo == Uporabnik._zasifriraj_geslo(geslo_v_cistopisu, sol)
+
 
     def v_slovar(self):
         return {
             "uporabnisko_ime": self.uporabnisko_ime,
             "zasifrirano_geslo": self.zasifrirano_geslo,
-            "proracun": self.proracun.v_slovar(),
+            "stanje": self.stanje.v_slovar(),
         }
-
-    def v_datoteko(self):
-        with open(
-            Uporabnik.ime_uporabnikove_datoteke(self.uporabnisko_ime), "w"
-        ) as datoteka:
-            json.dump(self.v_slovar(), datoteka, ensure_ascii=False, indent=4)
-
-    def preveri_geslo(self, geslo_v_cistopisu):
-        sol, _ = self.zasifrirano_geslo.split("$")
-        return self.zasifrirano_geslo == Uporabnik._zasifriraj_geslo(geslo_v_cistopisu, sol)
-
-    @staticmethod
-    def ime_uporabnikove_datoteke(uporabnisko_ime):
-        return f"{uporabnisko_ime}.json"
 
     @staticmethod
     def iz_slovarja(slovar):
         uporabnisko_ime = slovar["uporabnisko_ime"]
         zasifrirano_geslo = slovar["zasifrirano_geslo"]
-        stanje = Stanje.iz_slovarja(slovar["proracun"])
+        stanje = Stanje.iz_slovarja(slovar["stanje"])
         return Uporabnik(uporabnisko_ime, zasifrirano_geslo, stanje)
+
+
+    def v_datoteko(self):
+        with open(
+            Uporabnik.ime_uporabnikove_datoteke(self.uporabnisko_ime), "w") as datoteka:
+            json.dump(self.v_slovar(), datoteka, ensure_ascii=False, indent=4)
 
     @staticmethod
     def iz_datoteke(uporabnisko_ime):
@@ -101,6 +102,7 @@ class Uporabnik:
                 return Uporabnik.iz_slovarja(slovar)
         except FileNotFoundError:
             return None
+
 
     def nastavi_pomembnost_casa(self, vrednost):
         if vrednost == 'zelo':
@@ -211,6 +213,7 @@ class Pot:
     #določi optimalno prevozno sredstvo za dano začetno in končno točko
     def optimalna_pot(self, preferenca_cas=None, preferenca_onesnazevanje=None):
         min = math.inf
+        optimalna = self
         for sredstvo in SREDSTVA:
             
             pot = Pot(self.zacetek, self.konec, sredstvo, self.datum)
