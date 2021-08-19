@@ -152,6 +152,7 @@ class Pot:
     def __str__(self):
         return f'Pot({self.zacetek}, {self.konec}, {self.sredstvo}, {self.datum})'
 
+            
     #sestavi url za klic distance matrice preko API
     def url(self):
         if self.sredstvo == 'train' or self.sredstvo == 'bus':
@@ -199,7 +200,7 @@ class Pot:
         return c
 
     #izračuna količino izpustov CO2, proizvedenih s potjo v tonah
-    def izracunaj_izpuste(self):
+    def izpusti(self):
         if self.sredstvo == "driving":
             return self.razdalja()["razdalja"] * CO2_NA_KM_AVTO * 10 **(-9)
         elif self.sredstvo == "train":
@@ -220,7 +221,7 @@ class Pot:
             if not pot:
                 continue
             else:
-                i = indeks(pot.trajanje(), pot.izracunaj_izpuste(), pot.cena(), preferenca_cas, preferenca_onesnazevanje)
+                i = indeks(pot.trajanje(), pot.izpusti(), pot.cena(), preferenca_cas, preferenca_onesnazevanje)
                 print(i)
                 if i < min:
                     optimalna = pot
@@ -238,6 +239,18 @@ class Prevozno_sredstvo:
         self.optimalne = []
         self.cena = 0
 
+    def ime(self):
+        if self.sredstvo == 'driving':
+            return 'Avto'
+        elif self.sredstvo == 'walking':
+            return 'Hoja'
+        elif self.sredstvo == 'bicycling':
+            return 'Kolo'
+        elif self.sredstvo == 'train':
+            return 'Vlak'
+        else:
+            return 'Bus'
+            
     def skupna_dolzina(self):
         d = 0
         for pot in self.poti:
