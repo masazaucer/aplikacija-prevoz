@@ -20,16 +20,20 @@
         <input type="text" class="datepicker" id='date' name="datum" defaultDate='date.today()' setDefaultDate='True'>
         <label for="date">Datum</label>
     </div>
+    <script>document.addEventListener('DOMContentLoaded', function() {
+      var elems = document.querySelectorAll('.datepicker');
+      var instances = M.Datepicker.init(elems, options);
+    });</script>
     
       <div class="input-field col s6">
         <i class="material-icons prefix">directions_car</i>
         
-        <select>
-          <option value="" disabled selected><p style="color:grey">Sredstvo</p></option>
-          <option value="avto">Avto<i class="material-icons">directions_car</i></option>
-          <option value="hoja">Hoja<i class="material-icons">directions_walk</i></option>
-          <option value="javni_prevoz">Javni prevoz<i class="material-icons">directions_transit</i></option>
-          <option value="kolo">Kolo<i class="material-icons">directions_bike</i></option>
+        <select name="sredstvo">
+          <option value="" disabled selected>Sredstvo</option>
+          <option value="driving"><i class="material-icons">directions_car</i>Avto</option>
+          <option value="walking">Hoja<i class="material-icons">directions_walk</i></option>
+          <option value="train">Javni prevoz<i class="material-icons">directions_transit</i></option>
+          <option value="bicycling">Kolo<i class="material-icons">directions_bike</i></option>
      
         </select>
         

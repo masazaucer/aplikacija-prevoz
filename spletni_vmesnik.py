@@ -64,7 +64,6 @@ def dodaj_pot():
     konec = bottle.request.forms.getunicode("konec")
     datum = bottle.request.forms.getunicode("datum")
     ime_sredstva = bottle.request.forms.getunicode("sredstvo")
-    sredstvo = poisci_sredstvo(stanje, "sredstvo")
     stanje.dodaj_pot(zacetek, konec, ime_sredstva, datum)
 #    shrani_stanje()
     bottle.redirect("/poti/")
@@ -73,7 +72,7 @@ def dodaj_pot():
 @bottle.get('/analiza/<ime_sredstva>/')
 def prikazi_sredstvo(ime_sredstva):
     if ime_sredstva == 'skupno':
-        return bottle.template('prikazi_skupno_stanje.tpl')
+        return bottle.template('prikazi_skupno_stanje.tpl', stanje=stanje)
     else:
         sredstvo = stanje.poisci_sredstvo(ime_sredstva)
         return bottle.template('prikazi_sredstvo.tpl', sredstvo=sredstvo)

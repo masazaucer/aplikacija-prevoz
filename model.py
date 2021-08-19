@@ -154,10 +154,10 @@ class Pot:
 
     #sestavi url za klic distance matrice preko API
     def url(self):
-        if self.sredstvo == 'vlak' or self.sredstvo == 'bus':
+        if self.sredstvo == 'train' or self.sredstvo == 'bus':
             u = zacetni_url + "&origins=" + self.zacetek + "&destinations=" + self.konec + "&mode=transiting&transit_mode=" + self.sredstvo + "&key=" + API_KEY
             return u
-        elif self.sredstvo == 'hoja' or self.sredstvo == 'kolo':
+        elif self.sredstvo == 'walking' or self.sredstvo == 'bicycling':
             u = zacetni_url + "&origins=" + self.zacetek + "&destinations=" + self.konec + "&mode=walking&key=" + API_KEY
             return u
         else:
@@ -180,7 +180,7 @@ class Pot:
     def trajanje(self):
         try:
             output = requests.get(self.url()).json()
-            if self.sredstvo == 'kolo':
+            if self.sredstvo == 'bicycling':
                 return (output["rows"][0]["elements"][0]["duration"]["value"]) / 5
             else:
                 return output["rows"][0]["elements"][0]["duration"]["value"]
@@ -189,9 +189,9 @@ class Pot:
 
     #izračuna dejansko ceno poti(gorivo, stroški uporabe avtomobila, približna ocena cene vozovnic na kilometer prepotovane poti z vlakom/busom)
     def cena(self):
-        if self.sredstvo == 'avto':
+        if self.sredstvo == 'driving':
             c = STROSEK_AVTOMOBILA_NA_KM * self.razdalja()["razdalja"] / 1000
-        elif self.sredstvo == 'bus' or self.sredstvo == 'vlak':
+        elif self.sredstvo == 'bus' or self.sredstvo == 'train':
             c = CENA_VLAK_NA_KM * self.razdalja()["razdalja"] / 1000
         else:
             c = 0
@@ -200,9 +200,9 @@ class Pot:
 
     #izračuna količino izpustov CO2, proizvedenih s potjo v tonah
     def izracunaj_izpuste(self):
-        if self.sredstvo == "avto":
+        if self.sredstvo == "driving":
             return self.razdalja()["razdalja"] * CO2_NA_KM_AVTO * 10 **(-9)
-        elif self.sredstvo == "vlak":
+        elif self.sredstvo == "train":
             return self.razdalja()["razdalja"] * CO2_NA_KM_VLAK * 10 **(-9)
         elif self.sredstvo == "bus":
             return self.razdalja()["razdalja"] * CO2_NA_KM_BUS * 10 **(-9)
@@ -292,11 +292,12 @@ class Stanje:
 
     def dodaj_sredstvo(self, ime):
         if ime in self.prevozna_sredstva_po_imenih:
-            raise ValueError('Prevozno sredstvo s tem imenom že obstaja!')
+            raise ValueError(f'Prevozno sredstvo {ime} že obstaja!')
         nov = Prevozno_sredstvo(ime)
         self.prevozna_sredstva.append(nov)
         self.prevozna_sredstva_po_imenih[ime] = nov
         self.poti_po_sredstvih[nov] = []
+        self.optimalne_po_sredstvih[nov] = []
         return nov
 
     def odstrani_sredstvo(self, ime):
