@@ -228,6 +228,7 @@ class Pot:
                     min = i
         return optimalna
 
+#odstrani?
     def spremeni_datum(self, dan, mesec, leto):
         self.datum = date(leto, mesec, dan)
 
@@ -239,18 +240,18 @@ class Prevozno_sredstvo:
         self.optimalne = []
         self.cena = 0
 
-    def ime(self):
-        if self.sredstvo == 'driving':
+    def ime_slo(self):
+        if self.ime == 'driving':
             return 'Avto'
-        elif self.sredstvo == 'walking':
+        elif self.ime == 'walking':
             return 'Hoja'
-        elif self.sredstvo == 'bicycling':
+        elif self.ime == 'bicycling':
             return 'Kolo'
-        elif self.sredstvo == 'train':
+        elif self.ime == 'train':
             return 'Vlak'
         else:
             return 'Bus'
-            
+
     def skupna_dolzina(self):
         d = 0
         for pot in self.poti:
