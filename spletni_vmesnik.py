@@ -10,6 +10,8 @@ try:
 except FileNotFoundError:
     stanje = Stanje()
 
+uporabnik = Uporabnik('masa', '123', stanje)
+
 def poisci_sredstvo(stanje, ime_polja):
     try:
         ime_sredstva = bottle.request.forms.getunicode(ime_polja)
@@ -72,24 +74,24 @@ def dodaj_pot():
 @bottle.get('/analiza/<ime_sredstva>/')
 def prikazi_sredstvo(ime_sredstva):
     if ime_sredstva == 'skupno':
-        return bottle.template('prikazi_skupno_stanje.tpl', stanje=stanje)
+        return bottle.template('prikazi_skupno_stanje.tpl', stanje=stanje, sredstva=stanje.prevozna_sredstva)
     else:
         sredstvo = stanje.poisci_sredstvo(ime_sredstva)
-        return bottle.template('prikazi_sredstvo.tpl', sredstvo=sredstvo)
+        return bottle.template('prikazi_sredstvo.tpl', sredstvo=sredstvo, sredstva=stanje.prevozna_sredstva)
 
 
-
+#uredi definicijo spremenljivke uporabnik
 @bottle.post("/pomembnost-casa/")
 def pomembnost_casa():
     pomembnost = bottle.request.forms.getunicode("pomembnost_casa")
-    print(pomembnost)
+    uporabnik.nastavi_pomembnost_casa(pomembnost)
     bottle.redirect("/")
-"""
+
 @bottle.post("/pomembnost-onesnazevanja/")
 def pomembnost_onesnazevanja():
     pomembnost = bottle.request.forms.getunicode("pomembnost_onesnazevanja")
     uporabnik.nastavi_pomembnost_onesnazevanja(pomembnost)
     bottle.redirect("/")
-"""
+
 
 bottle.run(reloader=True, debug=True)
