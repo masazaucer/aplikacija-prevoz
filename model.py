@@ -263,12 +263,24 @@ class Prevozno_sredstvo:
         for pot in self.poti:
             t += pot.trajanje()
         return t
+    
+    def skupna_cena(self):
+        c = 0
+        for pot in self.poti:
+            c += pot.cena()
+        return c
 
     def skupna_cena_sredstva(self):
         cena = self.cena
         for pot in self.poti:
             cena += pot.cena()
         return cena
+
+    def izpusti_co2(self):
+        izpusti = 0
+        for pot in self.poti:
+            izpusti += pot.izpusti()
+        return izpusti
     
     def stevilo_poti(self):
         return len(self.poti)
@@ -277,9 +289,27 @@ class Prevozno_sredstvo:
         self.cena += strosek
         return self.cena
 
-    def izpusti_co2(self):
+    def skupna_dolzina_optimalno(self):
+        d = 0
+        for pot in self.optimalne:
+            d += pot.razdalja()['razdalja']
+        return d
+
+    def skupno_trajanje_optimalno(self):
+        t = 0
+        for pot in self.optimalne:
+            t += pot.trajanje()
+        return t
+
+    def skupna_cena_optimalno(self):
+        c = 0
+        for pot in self.optimalne:
+            c += pot.cena()
+        return c
+
+    def izpusti_co2_optimalno(self):
         izpusti = 0
-        for pot in self.poti:
+        for pot in self.optimalne:
             izpusti += pot.izpusti()
         return izpusti
 
