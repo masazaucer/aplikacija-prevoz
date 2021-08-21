@@ -4,6 +4,7 @@ from datetime import date
 from model import Uporabnik
 
 DATOTEKA_S_STANJEM = "stanje.json"
+SREDSTVA = ["walking", "bicycling", "driving", "train", "bus"]
 
 try:
     stanje = Stanje.nalozi_stanje(DATOTEKA_S_STANJEM)
@@ -56,7 +57,11 @@ def pomoc():
 
 @bottle.post("/dodaj-sredstvo/")
 def dodaj_sredstvo():
-    stanje.dodaj_sredstvo(bottle.request.forms.getunicode("ime"))
+    for sredstvo in SREDSTVA:
+        if bottle.request.forms.getunicode(sredstvo) == 'True' and (sredstvo not in stanje.prevozna_sredstva_po_imenih):
+            stanje.dodaj_sredstvo(sredstvo)
+        elif bottle.request.forms.getunicode(sredstvo) != 'True' and (sredstvo not in stanje.prevozna_sredstva_po_imenih):
+            stanje.odstrani_sredstvo(sredstvo)
 #    shrani_stanje()
     bottle.redirect("/")
 
