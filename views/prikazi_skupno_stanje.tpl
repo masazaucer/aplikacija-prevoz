@@ -1,11 +1,21 @@
 % rebase('analiza.tpl')
 
-<h1>Skupno<h1>
+<head>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-alpha.4/css/materialize.min.css">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
+  <script type = "text/javascript" src = "https://code.jquery.com/jquery-2.1.1.min.js"></script>           
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-alpha.4/js/materialize.min.js"></script>
+
+</head>
+
+<body>
+<div class="container">
+<h5>Aktualni prikaz skupne porabe za vsa sredstva</h5>
 <ul class="collapsible">
     <li>
         <div class="collapsible-header"><i class="material-icons">ev_station</i>Poraba CO2</div>
-        <div class="collapsible-body"><span>Proizvedel si {{stanje.skupi_izpusti()}} gramov CO2.</span></div>
+        <div class="collapsible-body"><span>Proizvedel si {{stanje.skupni_izpusti()}} gramov CO2.</span></div>
     </li>
     <li>
         <div class="collapsible-header"><i class="material-icons">euro_symbol</i>Cena</div>
@@ -20,3 +30,11 @@
         <div class="collapsible-body"><span>Vozil si se {{stanje.skupna_razdalja() / 1000}} kilometrov.</span></div>
     </li>
 </ul>
+</div>
+
+<script>
+    $(document).ready(function(){
+       $('.collapsible').collapsible();
+     });
+</script>
+</body>  

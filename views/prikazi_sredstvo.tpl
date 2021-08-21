@@ -1,8 +1,7 @@
 % rebase('analiza.tpl')
 
-
-<h1>{{sredstvo.ime}}</h1>
-
+<div class="container">
+<h1>{{sredstvo.ime_slo()}}</h1>
 <ul class="collapsible">
     <li>
       <div class="collapsible-header"><i class="material-icons">ev_station</i>Poraba CO2</div>
@@ -27,3 +26,10 @@
         <div class="collapsible-body"><span>Vozil si se {{sredstvo.skupna_dolzina() / 1000}} kilometrov.</span></div>
     </li>
   </ul>
+  </div>
+
+  <script>
+    $(document).ready(function(){
+      $('.collapsible').collapsible();
+    });
+  </script>
