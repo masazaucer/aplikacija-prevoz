@@ -189,6 +189,7 @@ class Pot:
             return None
 
     #izračuna dejansko ceno poti(gorivo, stroški uporabe avtomobila, približna ocena cene vozovnic na kilometer prepotovane poti z vlakom/busom)
+    #loči vlak in bus?
     def cena(self):
         if self.sredstvo == 'driving':
             c = STROSEK_AVTOMOBILA_NA_KM * self.razdalja()["razdalja"] / 1000
@@ -212,6 +213,7 @@ class Pot:
 
 
     #določi optimalno prevozno sredstvo za dano začetno in končno točko
+    #povezi z razredom uporabnik
     def optimalna_pot(self, preferenca_cas=None, preferenca_onesnazevanje=None):
         min = math.inf
         optimalna = self
@@ -271,10 +273,9 @@ class Prevozno_sredstvo:
         return c
 
     def skupna_cena_sredstva(self):
-        cena = self.cena
-        for pot in self.poti:
-            cena += pot.cena()
-        return cena
+        cena_sredstva = self.cena
+        cena_poti = self.skupna_cena()
+        return cena_sredstva + cena_poti
 
     def izpusti_co2(self):
         izpusti = 0
@@ -351,6 +352,7 @@ class Stanje:
                 self.poti_po_sredstvih[None].append(pot)
             self.prevozna_sredstva.remove(sredstvo)
             del self.poti_po_sredstvih[sredstvo]
+            del self.optimalne_po_sredstvih[sredstvo]
             del self.prevozna_sredstva_po_imenih[ime]
         else:
             return None
@@ -405,10 +407,10 @@ class Stanje:
             st += sredstvo.stevilo_poti()
         return st
 
-    def optimalne_poti(self):
-        optimalne = []
-        for pot in self.poti:
-            optimalne.append(pot.optimalna_pot(uporabnik.preferenca_cas, uporabnik.preferenca_onesnazevanje))
+    # def optimalne_poti(self):
+    #     optimalne = []
+    #     for pot in self.poti:
+    #         optimalne.append(pot.optimalna_pot(uporabnik.preferenca_cas, uporabnik.preferenca_onesnazevanje))
 
 
 
