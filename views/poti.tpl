@@ -84,12 +84,22 @@
       <tr>
         <td>{{pot.zacetek}}</td>
         <td>{{pot.konec}}</td>
-        <td>{{pot.sredstvo}}</td>
+        <td>{{stanje.poisci_sredstvo(pot.sredstvo).ime_slo()}}</td>
         <td>{{pot.datum}}</td>
         <td>{{pot.razdalja()["razdalja"]}}</td>
         <td>{{pot.trajanje()}}</td>
         <td>{{pot.cena()}}</td>
-        <td>{{pot.izracunaj_izpuste()}}</td>
+        <td>{{pot.izpusti()}}</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td></td>
+        <td>{{pot.optimalna_pot().sredstvo}}</td>
+        <td></td>
+        <td>{{pot.optimalna_pot().razdalja()["razdalja"]}}</td>
+        <td>{{pot.optimalna_pot().trajanje()}}</td>
+        <td>{{pot.optimalna_pot().cena()}}</td>
+        <td>{{pot.optimalna_pot().izpusti()}}</td>
       </tr>
     % end
     </tbody>
