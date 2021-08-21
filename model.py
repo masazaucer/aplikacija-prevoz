@@ -148,6 +148,9 @@ class Pot:
         self.konec = konec
         self.sredstvo = sredstvo
         self.datum = datum
+        self.trajanje = self.izracunano_trajanje
+        self.cena = self.izracunana_cena
+        self.izpusti = self.izracunani_izpusti
 
     def __str__(self):
         return f'Pot({self.zacetek}, {self.konec}, {self.sredstvo}, {self.datum})'
@@ -178,7 +181,7 @@ class Pot:
             return None
 
     #izračuna čas, potreben za pot z danim prevoznim sredstvom
-    def trajanje(self):
+    def izracunano_trajanje(self):
         try:
             output = requests.get(self.url()).json()
             if self.sredstvo == 'bicycling':
@@ -190,7 +193,7 @@ class Pot:
 
     #izračuna dejansko ceno poti(gorivo, stroški uporabe avtomobila, približna ocena cene vozovnic na kilometer prepotovane poti z vlakom/busom)
     #loči vlak in bus?
-    def cena(self):
+    def izracunana_cena(self):
         if self.sredstvo == 'driving':
             c = STROSEK_AVTOMOBILA_NA_KM * self.razdalja()["razdalja"] / 1000
         elif self.sredstvo == 'bus' or self.sredstvo == 'train':
@@ -201,7 +204,7 @@ class Pot:
         return c
 
     #izračuna količino izpustov CO2, proizvedenih s potjo v tonah
-    def izpusti(self):
+    def izracunani_izpusti(self):
         if self.sredstvo == "driving":
             return self.razdalja()["razdalja"] * CO2_NA_KM_AVTO * 10 **(-9)
         elif self.sredstvo == "train":
