@@ -20,20 +20,16 @@
         <input type="text" class="datepicker" id='date' name="datum" defaultDate='date.today()' setDefaultDate='True'>
         <label for="date">Datum</label>
     </div>
-    <script>document.addEventListener('DOMContentLoaded', function() {
-      var elems = document.querySelectorAll('.datepicker');
-      var instances = M.Datepicker.init(elems, options);
-    });</script>
     
       <div class="input-field col s6">
         <i class="material-icons prefix">directions_car</i>
         
         <select name="sredstvo">
           <option value="" disabled selected>Sredstvo</option>
-          <option value="driving"><i class="material-icons">directions_car</i>Avto</option>
-          <option value="walking">Hoja<i class="material-icons">directions_walk</i></option>
-          <option value="train">Javni prevoz<i class="material-icons">directions_transit</i></option>
-          <option value="bicycling">Kolo<i class="material-icons">directions_bike</i></option>
+          <option value="driving">Avto</option>
+          <option value="walking">Hoja</option>
+          <option value="train">Javni prevoz</option>
+          <option value="bicycling">Kolo</option>
      
         </select>
         
@@ -42,19 +38,19 @@
         
       </div>
     
-    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-       <!-- Compiled and minified JavaScript -->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-alpha.4/js/materialize.min.js"></script>
-             
-    <script>
-    (function($){
-      $(function(){
-        // Plugin initialization
-        $('select').not('.disabled').formSelect();
-      }); 
-    })(jQuery); // end of jQuery name space
-    </script>
-  </div>
+      <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+      <!-- Compiled and minified JavaScript -->
+       <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-alpha.4/js/materialize.min.js"></script>
+            
+   <script>
+   (function($){
+     $(function(){
+       // Plugin initialization
+       $('select').not('.disabled').formSelect();
+     }); 
+   })(jQuery); // end of jQuery name space
+   </script>
+ </div>
 
   <div class="row">
     <div class="input-field col s12">
