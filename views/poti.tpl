@@ -64,7 +64,7 @@
 </form>
 
 
-<table class="striped">
+<table class="highlight">
     <h2><strong>Tvoje poti:</strong></h2>
     <thead>
       <tr>
@@ -86,20 +86,20 @@
         <td>{{pot.konec}}</td>
         <td>{{stanje.poisci_sredstvo(pot.sredstvo).ime_slo()}}</td>
         <td>{{pot.datum}}</td>
-        <td>{{pot.razdalja()["razdalja"]}}</td>
-        <td>{{pot.trajanje()}}</td>
-        <td>{{pot.cena()}}</td>
-        <td>{{pot.izpusti()}}</td>
+        <td>{{round(pot.razdalja()["razdalja"], 2)}}</td>
+        <td>{{round(pot.trajanje(), 2)}}</td>
+        <td>{{round(pot.cena(), 2)}}</td>
+        <td>{{round(pot.izpusti(), 2)}}</td>
       </tr>
       <tr>
+        <td><b>Optimalna izbira</b></td>
         <td></td>
+        <td>{{stanje.poisci_sredstvo(pot.optimalna_pot().sredstvo).ime_slo()}}</td>
         <td></td>
-        <td>{{pot.optimalna_pot().sredstvo}}</td>
-        <td></td>
-        <td>{{pot.optimalna_pot().razdalja()["razdalja"]}}</td>
-        <td>{{pot.optimalna_pot().trajanje()}}</td>
-        <td>{{pot.optimalna_pot().cena()}}</td>
-        <td>{{pot.optimalna_pot().izpusti()}}</td>
+        <td>{{round(pot.optimalna_pot().razdalja()["razdalja"], 2)}}</td>
+        <td>{{round(pot.optimalna_pot().trajanje(), 2)}}</td>
+        <td>{{round(pot.optimalna_pot().cena(), 2)}}</td>
+        <td>{{round(pot.optimalna_pot().izpusti(), 2)}}</td>
       </tr>
     % end
     </tbody>
