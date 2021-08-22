@@ -185,7 +185,7 @@ class Pot:
         try:
             output = requests.get(self.url()).json()
             if self.sredstvo == 'bicycling':
-                return (output["rows"][0]["elements"][0]["duration"]["value"]) / 5
+                return (output["rows"][0]["elements"][0]["duration"]["value"]) / 3
             else:
                 return output["rows"][0]["elements"][0]["duration"]["value"]
         except KeyError:
