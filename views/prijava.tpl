@@ -1,6 +1,9 @@
 % rebase('base.tpl')
 
 <form action="/prijava/" method="POST">
+    % if napaka:
+        <h3>{{ napaka }}</h3>
+    % end
     <div class="row">
         <div class="input-field col s12">
           <input id="username" type="text" class="validate" name="username">

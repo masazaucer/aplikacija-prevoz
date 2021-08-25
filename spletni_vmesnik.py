@@ -1,9 +1,12 @@
+from sys import path
 import bottle
 from model import Stanje, Uporabnik, Prevozno_sredstvo, Pot
 from datetime import date
 from model import Uporabnik
 
 DATOTEKA_S_STANJEM = "stanje.json"
+PISKOTEK_UPORABNISKO_IME = "uporabnisko_ime"
+SKRIVNOST = "to je ena skrivnost"
 SREDSTVA = ["walking", "bicycling", "driving", "train", "bus"]
 
 try:
@@ -20,6 +23,13 @@ def poisci_sredstvo(stanje, ime_polja):
     except KeyError:
         return None
 
+def preveri_prijavo():
+    prijavljen = bottle.request.get_cookie(PISKOTEK_UPORABNISKO_IME)
+    if prijavljen != 'da':
+        bottle.redirect('/prijava/')
+    else:
+        bottle.redirect('/stanje/')
+
 @bottle.get("/registracija/")
 def registracija_get():
     return bottle.template("registracija.tpl", napaka=None)
@@ -35,8 +45,19 @@ def registracija_post():
 def prijava_get():
     return bottle.template("prijava.tpl", napaka=None)
 
+@bottle.post("/prijava/")
+def prijava_post():
+    username = bottle.request.forms.getunicode("username")
+    password = bottle.request.forms.getunicode("password")
+    if password == '123':
+        bottle.response.set_cookie(PISKOTEK_UPORABNISKO_IME, 'da', path='/', secret=SKRIVNOST)
+        bottle.redirect('/')
+    else:
+        return bottle.template("prijava.tpl", napaka='Geslo je napačno')
+
 @bottle.get("/")
 def osnovna_stran():
+    preveri_prijavo()
     bottle.redirect("/stanje/")
 
 @bottle.get("/stanje/")
@@ -49,6 +70,7 @@ def poti():
 
 @bottle.get("/analiza/")
 def analiza():
+    preveri_prijavo()
     return bottle.redirect("/analiza/skupno/")
 
 @bottle.get("/pomoc/")
