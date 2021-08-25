@@ -58,9 +58,7 @@ def registracija_post():
         )
         bottle.redirect("/")
     except ValueError as e:
-        return bottle.template(
-            "registracija.tpl", napaka=e.args[0]
-        )
+        return bottle.template("registracija.tpl", napaka=e.args[0])
 
 
 @bottle.get("/prijava/")
@@ -80,9 +78,7 @@ def prijava_post():
         )
         bottle.redirect("/")
     except ValueError as e:
-        return bottle.template(
-            "prijava.tpl", napaka=e.args[0]
-        )
+        return bottle.template("prijava.tpl", napaka=e.args[0])
 
 
 @bottle.post("/odjava/")
@@ -117,12 +113,13 @@ def pomoc():
 
 @bottle.post("/dodaj-sredstvo/")
 def dodaj_sredstvo():
+    uporabnik = trenutni_uporabnik()
     for sredstvo in SREDSTVA:
         if bottle.request.forms.getunicode(sredstvo) == 'True' and (sredstvo not in stanje.prevozna_sredstva_po_imenih):
             stanje.dodaj_sredstvo(sredstvo)
-        elif bottle.request.forms.getunicode(sredstvo) != 'True' and (sredstvo not in stanje.prevozna_sredstva_po_imenih):
+        elif bottle.request.forms.getunicode(sredstvo) != 'True' and (sredstvo in stanje.prevozna_sredstva_po_imenih):
             stanje.odstrani_sredstvo(sredstvo)
-    stanje.shrani_stanje(DATOTEKA_S_STANJEM)
+    shrani_stanje(uporabnik)
     bottle.redirect("/")
 
 @bottle.post("/dodaj-pot/")
