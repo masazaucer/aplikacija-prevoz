@@ -62,7 +62,7 @@ def dodaj_sredstvo():
             stanje.dodaj_sredstvo(sredstvo)
         elif bottle.request.forms.getunicode(sredstvo) != 'True' and (sredstvo not in stanje.prevozna_sredstva_po_imenih):
             stanje.odstrani_sredstvo(sredstvo)
-#    shrani_stanje()
+    stanje.shrani_stanje(DATOTEKA_S_STANJEM)
     bottle.redirect("/")
 
 @bottle.post("/dodaj-pot/")
@@ -72,7 +72,7 @@ def dodaj_pot():
     datum = bottle.request.forms.getunicode("datum")
     ime_sredstva = bottle.request.forms.getunicode("sredstvo")
     stanje.dodaj_pot(zacetek, konec, ime_sredstva, datum)
-#    shrani_stanje()
+    stanje.shrani_stanje(DATOTEKA_S_STANJEM)
     bottle.redirect("/poti/")
      
 

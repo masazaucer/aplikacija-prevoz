@@ -410,12 +410,29 @@ class Stanje:
             st += sredstvo.stevilo_poti()
         return st
 
-    # def optimalne_poti(self):
-    #     optimalne = []
-    #     for pot in self.poti:
-    #         optimalne.append(pot.optimalna_pot(uporabnik.preferenca_cas, uporabnik.preferenca_onesnazevanje))
+    def skupna_dolzina_optimalno(self):
+        d = 0
+        for pot in self.optimalne:
+            d += pot.razdalja()['razdalja']
+        return d
 
+    def skupno_trajanje_optimalno(self):
+        t = 0
+        for pot in self.optimalne:
+            t += pot.trajanje()
+        return t
 
+    def skupna_cena_optimalno(self):
+        c = 0
+        for pot in self.optimalne:
+            c += pot.cena()
+        return c
+
+    def izpusti_co2_optimalno(self):
+        izpusti = 0
+        for pot in self.optimalne:
+            izpusti += pot.izpusti()
+        return izpusti
 
     def v_slovar(self):
             return {
@@ -436,8 +453,8 @@ class Stanje:
                 ],
             }
     @staticmethod
-    def iz_slovarja(cls, slovar):
-        stanje = cls()
+    def iz_slovarja(slovar):
+        stanje = Stanje()
         for sredstvo in slovar["prevozna sredstva"]:
             stanje.dodaj_sredstvo(sredstvo["ime"])
 
@@ -450,13 +467,14 @@ class Stanje:
             )
         return stanje
         
-
     def shrani_stanje(self, ime_datoteke):
-        with open(ime_datoteke, "w") as datoteka:
-            json.dump(self.v_slovar(), datoteka, ensure_ascii=False, indent=4)
-
-    @classmethod
-    def nalozi_stanje(cls, ime_datoteke):
-        with open(ime_datoteke) as datoteka:
-            slovar_s_stanjem = json.load(datoteka)
-        return cls.iz_slovarja(slovar_s_stanjem)
+        with open(ime_datoteke, 'w') as dat:
+            slovar = self.v_slovar()
+            json.dump(slovar, dat)
+    
+    @staticmethod
+    def nalozi_stanje(ime_datoteke):
+        with open(ime_datoteke) as dat:
+            slovar = json.load(dat)
+            print(slovar)
+            return Stanje.iz_slovarja(slovar)
