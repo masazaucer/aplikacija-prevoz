@@ -16,6 +16,7 @@ except FileNotFoundError:
 
 uporabnik = Uporabnik('masa', '123', stanje)
 
+
 def poisci_sredstvo(stanje, ime_polja):
     try:
         ime_sredstva = bottle.request.forms.getunicode(ime_polja)
@@ -24,22 +25,15 @@ def poisci_sredstvo(stanje, ime_polja):
         return None
 
 def preveri_prijavo():
-    prijavljen = bottle.request.get_cookie(PISKOTEK_UPORABNISKO_IME)
+    prijavljen = bottle.request.get_cookie(PISKOTEK_UPORABNISKO_IME, secret=SKRIVNOST)
     if prijavljen != 'da':
         bottle.redirect('/prijava/')
     else:
         bottle.redirect('/stanje/')
 
-@bottle.get("/registracija/")
-def registracija_get():
-    return bottle.template("registracija.tpl", napaka=None)
 
-@bottle.post("/registracija/")
-def registracija_post():
-    username = bottle.request.forms.getunicode("username")
-    password = bottle.request.forms.getunicode("password")
-    print("uspesno")
-    bottle.redirect("/")
+
+
 
 @bottle.get("/prijava/")
 def prijava_get():
@@ -51,13 +45,32 @@ def prijava_post():
     password = bottle.request.forms.getunicode("password")
     if password == '123':
         bottle.response.set_cookie(PISKOTEK_UPORABNISKO_IME, 'da', path='/', secret=SKRIVNOST)
-        bottle.redirect('/')
+        bottle.redirect('/stanje/')
     else:
         return bottle.template("prijava.tpl", napaka='Geslo je napačno')
 
+@bottle.post("/odjava/")
+def odjava():
+    bottle.response.delete_cookie(PISKOTEK_UPORABNISKO_IME, path="/")
+    bottle.redirect("/")
+
+
+def trenutni_uporabnik():
+    uporabnisko_ime = bottle.request.get_cookie(
+        PISKOTEK_UPORABNISKO_IME, secret=SKRIVNOST
+    )
+    if uporabnisko_ime:
+        return podatki_uporabnika(uporabnisko_ime)
+    else:
+        bottle.redirect("/prijava/")
+
+
+def podatki_uporabnika(uporabnisko_ime):
+    return Uporabnik.iz_datoteke(uporabnisko_ime)
+
+
 @bottle.get("/")
 def osnovna_stran():
-    preveri_prijavo()
     bottle.redirect("/stanje/")
 
 @bottle.get("/stanje/")
@@ -70,7 +83,6 @@ def poti():
 
 @bottle.get("/analiza/")
 def analiza():
-    preveri_prijavo()
     return bottle.redirect("/analiza/skupno/")
 
 @bottle.get("/pomoc/")
