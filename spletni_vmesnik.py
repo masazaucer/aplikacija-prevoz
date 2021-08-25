@@ -24,35 +24,8 @@ def poisci_sredstvo(stanje, ime_polja):
     except KeyError:
         return None
 
-def preveri_prijavo():
-    prijavljen = bottle.request.get_cookie(PISKOTEK_UPORABNISKO_IME, secret=SKRIVNOST)
-    if prijavljen != 'da':
-        bottle.redirect('/prijava/')
-    else:
-        bottle.redirect('/stanje/')
-
-
-
-
-
-@bottle.get("/prijava/")
-def prijava_get():
-    return bottle.template("prijava.tpl", napaka=None)
-
-@bottle.post("/prijava/")
-def prijava_post():
-    username = bottle.request.forms.getunicode("username")
-    password = bottle.request.forms.getunicode("password")
-    if password == '123':
-        bottle.response.set_cookie(PISKOTEK_UPORABNISKO_IME, 'da', path='/', secret=SKRIVNOST)
-        bottle.redirect('/stanje/')
-    else:
-        return bottle.template("prijava.tpl", napaka='Geslo je napačno')
-
-@bottle.post("/odjava/")
-def odjava():
-    bottle.response.delete_cookie(PISKOTEK_UPORABNISKO_IME, path="/")
-    bottle.redirect("/")
+def shrani_stanje(uporabnik):
+    uporabnik.v_datoteko()
 
 
 def trenutni_uporabnik():
@@ -67,6 +40,38 @@ def trenutni_uporabnik():
 
 def podatki_uporabnika(uporabnisko_ime):
     return Uporabnik.iz_datoteke(uporabnisko_ime)
+
+
+
+
+@bottle.get("/prijava/")
+def prijava_get():
+    return bottle.template("prijava.tpl", napaka=None)
+
+@bottle.post("/prijava/")
+def prijava_post():
+    username = bottle.request.forms.getunicode("username")
+    password = bottle.request.forms.getunicode("password")
+    if not username:
+        return bottle.template("registracija.tpl", napaka="Vnesi uporabniško ime!")
+    try:
+        Uporabnik.prijava(username, password)
+        bottle.response.set_cookie(
+            PISKOTEK_UPORABNISKO_IME, username, path="/", secret=SKRIVNOST
+        )
+        bottle.redirect("/")
+    except ValueError as e:
+        return bottle.template(
+            "prijava.tpl", napaka=e.args[0]
+        )
+        
+
+@bottle.post("/odjava/")
+def odjava():
+    bottle.response.delete_cookie(PISKOTEK_UPORABNISKO_IME, path="/")
+    bottle.redirect("/")
+
+
 
 
 @bottle.get("/")
