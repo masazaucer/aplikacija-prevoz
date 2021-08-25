@@ -124,12 +124,13 @@ def dodaj_sredstvo():
 
 @bottle.post("/dodaj-pot/")
 def dodaj_pot():
+    uporabnik = trenutni_uporabnik()
     zacetek = bottle.request.forms.getunicode("zacetek")
     konec = bottle.request.forms.getunicode("konec")
     datum = bottle.request.forms.getunicode("datum")
     ime_sredstva = bottle.request.forms.getunicode("sredstvo")
-    stanje.dodaj_pot(zacetek, konec, ime_sredstva, datum)
-    stanje.shrani_stanje(DATOTEKA_S_STANJEM)
+    uporabnik.stanje.dodaj_pot(zacetek, konec, ime_sredstva, datum)
+    shrani_stanje(uporabnik)
     bottle.redirect("/poti/")
      
 
