@@ -102,7 +102,7 @@ def nacrtovanje_stanja():
 @bottle.get("/poti/")
 def poti():
     uporabnik = trenutni_uporabnik()
-    return bottle.template("poti.tpl", stanje=uporabnik.stanje, napaka=None)
+    return bottle.template("poti.tpl", uporabnik=uporabnik, stanje=uporabnik.stanje, napaka=None)
 
 @bottle.get("/analiza/")
 def analiza():
@@ -148,10 +148,10 @@ def dodaj_pot():
 def prikazi_sredstvo(ime_sredstva):
     uporabnik = trenutni_uporabnik()
     if ime_sredstva == 'skupno':
-        return bottle.template('prikazi_skupno_stanje.tpl', stanje=uporabnik.stanje, sredstva=uporabnik.stanje.prevozna_sredstva)
+        return bottle.template('prikazi_skupno_stanje.tpl', uporabnik=uporabnik, stanje=uporabnik.stanje, sredstva=uporabnik.stanje.prevozna_sredstva)
     else:
         sredstvo = uporabnik.stanje.poisci_sredstvo(ime_sredstva)
-        return bottle.template('prikazi_sredstvo.tpl', sredstvo = sredstvo, sredstva=uporabnik.stanje.prevozna_sredstva)
+        return bottle.template('prikazi_sredstvo.tpl',  uporabnik=uporabnik, sredstvo = sredstvo, sredstva=uporabnik.stanje.prevozna_sredstva)
 
 
 @bottle.post("/pomembnost-casa/")
