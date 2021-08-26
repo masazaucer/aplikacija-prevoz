@@ -4,7 +4,6 @@ from model import Stanje, Uporabnik, Prevozno_sredstvo, Pot
 from datetime import date
 from model import Uporabnik
 
-DATOTEKA_S_STANJEM = "stanje.json"
 PISKOTEK_UPORABNISKO_IME = "uporabnisko_ime"
 SKRIVNOST = "to je ena skrivnost"
 SREDSTVA = ["walking", "bicycling", "driving", "train", "bus"]
@@ -37,7 +36,7 @@ def podatki_uporabnika(uporabnisko_ime):
 
 @bottle.get("/registracija/")
 def registracija_get():
-    return bottle.template("registracija.tpl", napaka=None)
+    return bottle.template("registracija.tpl", napaka=None, uporabnik=None)
 
 
 @bottle.post("/registracija/")
@@ -45,7 +44,7 @@ def registracija_post():
     username = bottle.request.forms.getunicode("username")
     password = bottle.request.forms.getunicode("password")
     if not username:
-        return bottle.template("registracija.tpl", napaka="Vnesi uporabniško ime!")
+        return bottle.template("registracija.tpl", napaka="Vnesi uporabniško ime!", uporabnik=None)
     try:
         Uporabnik.registracija(username, password)
         bottle.response.set_cookie(
@@ -53,19 +52,19 @@ def registracija_post():
         )
         bottle.redirect("/")
     except ValueError as e:
-        return bottle.template("registracija.tpl", napaka=e.args[0])
+        return bottle.template("registracija.tpl", napaka=e.args[0], uporabnik=None)
 
 
 @bottle.get("/prijava/")
 def prijava_get():
-    return bottle.template("prijava.tpl", napaka=None)
+    return bottle.template("prijava.tpl", napaka=None, uporabnik=None)
 
 @bottle.post("/prijava/")
 def prijava_post():
     username = bottle.request.forms.getunicode("username")
     password = bottle.request.forms.getunicode("password")
     if not username:
-        return bottle.template("prijava.tpl", napaka="Vnesi uporabniško ime!")
+        return bottle.template("prijava.tpl", napaka="Vnesi uporabniško ime!", uporabnik=None)
     try:
         Uporabnik.prijava(username, password)
         bottle.response.set_cookie(
@@ -73,11 +72,18 @@ def prijava_post():
         )
         bottle.redirect("/")
     except ValueError as e:
-        return bottle.template("prijava.tpl", napaka=e.args[0])
+        return bottle.template("prijava.tpl", napaka=e.args[0], uporabnik=None)
 
 
-@bottle.post("/odjava/")
-def odjava():
+@bottle.get("/odjava/")
+def odjava_get():
+    uporabnik=trenutni_uporabnik()
+    return bottle.template('odjava.tpl', uporabnik=uporabnik)
+
+
+@bottle.post('/odjava/')
+def odjava_post():
+    uporabnik=trenutni_uporabnik()
     bottle.response.delete_cookie(PISKOTEK_UPORABNISKO_IME, path="/")
     bottle.redirect("/")
 
@@ -91,7 +97,7 @@ def osnovna_stran():
 @bottle.get("/stanje/")
 def nacrtovanje_stanja():
     uporabnik = trenutni_uporabnik()
-    return bottle.template("stanje.tpl", stanje=uporabnik.stanje, poti=uporabnik.stanje.poti, sredstva=uporabnik.stanje.prevozna_sredstva)
+    return bottle.template("stanje.tpl", uporabnik=uporabnik, stanje=uporabnik.stanje, poti=uporabnik.stanje.poti, sredstva=uporabnik.stanje.prevozna_sredstva)
 
 @bottle.get("/poti/")
 def poti():
@@ -104,7 +110,8 @@ def analiza():
 
 @bottle.get("/pomoc/")
 def pomoc():
-    return bottle.template("pomoc.tpl")
+    uporabnik = trenutni_uporabnik()
+    return bottle.template("pomoc.tpl", uporabnik=uporabnik)
 
 @bottle.post("/dodaj-sredstvo/")
 def dodaj_sredstvo():

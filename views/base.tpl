@@ -176,8 +176,12 @@
                 <li><a href="/pomoc/">Pomoč</a></li>
               </ul>
               <ul id="nav-mobile" class="right hide-on-med-and-down">
+                % if uporabnik:
+                <li>{{uporabnik.uporabnisko_ime}}</li>
+                % end
                 <li><a href="/prijava/">Prijava</a></li>
                 <li><a href="/registracija/">Registracija</a></li>
+                <li><a href="/odjava/">Odjava</a></li>
               </ul>
             </div>
           </nav>
