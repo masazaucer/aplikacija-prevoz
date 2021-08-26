@@ -9,11 +9,6 @@ PISKOTEK_UPORABNISKO_IME = "uporabnisko_ime"
 SKRIVNOST = "to je ena skrivnost"
 SREDSTVA = ["walking", "bicycling", "driving", "train", "bus"]
 
-try:
-    stanje = Stanje.nalozi_stanje(DATOTEKA_S_STANJEM)
-except FileNotFoundError:
-    stanje = Stanje()
-
 
 def poisci_sredstvo(stanje, ime_polja):
     try:
@@ -101,7 +96,7 @@ def nacrtovanje_stanja():
 @bottle.get("/poti/")
 def poti():
     uporabnik = trenutni_uporabnik()
-    return bottle.template("poti.tpl", stanje=uporabnik.stanje)
+    return bottle.template("poti.tpl", stanje=uporabnik.stanje, napaka=None)
 
 @bottle.get("/analiza/")
 def analiza():
@@ -115,24 +110,26 @@ def pomoc():
 def dodaj_sredstvo():
     uporabnik = trenutni_uporabnik()
     for sredstvo in SREDSTVA:
-        if bottle.request.forms.getunicode(sredstvo) == 'True' and (sredstvo not in stanje.prevozna_sredstva_po_imenih):
-            stanje.dodaj_sredstvo(sredstvo)
-        elif bottle.request.forms.getunicode(sredstvo) != 'True' and (sredstvo in stanje.prevozna_sredstva_po_imenih):
-            stanje.odstrani_sredstvo(sredstvo)
+        if bottle.request.forms.getunicode(sredstvo) == 'True' and (sredstvo not in uporabnik.stanje.prevozna_sredstva_po_imenih):
+            uporabnik.stanje.dodaj_sredstvo(sredstvo)
+        elif bottle.request.forms.getunicode(sredstvo) != 'True' and (sredstvo in uporabnik.stanje.prevozna_sredstva_po_imenih):
+            uporabnik.stanje.odstrani_sredstvo(sredstvo)
     shrani_stanje(uporabnik)
     bottle.redirect("/")
 
 @bottle.post("/dodaj-pot/")
 def dodaj_pot():
-    uporabnik = trenutni_uporabnik()
-    zacetek = bottle.request.forms.getunicode("zacetek")
-    konec = bottle.request.forms.getunicode("konec")
-    datum = bottle.request.forms.getunicode("datum")
-    ime_sredstva = bottle.request.forms.getunicode("sredstvo")
-    uporabnik.stanje.dodaj_pot(zacetek, konec, ime_sredstva, datum)
-    shrani_stanje(uporabnik)
-    bottle.redirect("/poti/")
-     
+    try:
+        uporabnik = trenutni_uporabnik()
+        zacetek = bottle.request.forms.getunicode("zacetek")
+        konec = bottle.request.forms.getunicode("konec")
+        datum = bottle.request.forms.getunicode("datum")
+        ime_sredstva = bottle.request.forms.getunicode("sredstvo")
+        uporabnik.stanje.dodaj_pot(zacetek, konec, ime_sredstva, datum)
+        shrani_stanje(uporabnik)
+        bottle.redirect("/poti/")
+    except ValueError as e:
+        return bottle.template('/poti/', napaka=e.args[0])
 
 @bottle.get('/analiza/<ime_sredstva>/')
 def prikazi_sredstvo(ime_sredstva):
@@ -140,16 +137,16 @@ def prikazi_sredstvo(ime_sredstva):
     if ime_sredstva == 'skupno':
         return bottle.template('prikazi_skupno_stanje.tpl', stanje=uporabnik.stanje, sredstva=uporabnik.stanje.prevozna_sredstva)
     else:
-        sredstvo = stanje.poisci_sredstvo(ime_sredstva)
-        return bottle.template('prikazi_sredstvo.tpl', sredstvo=uporabnik.sredstvo, sredstva=uporabnik.stanje.prevozna_sredstva)
+        sredstvo = uporabnik.stanje.poisci_sredstvo(ime_sredstva)
+        return bottle.template('prikazi_sredstvo.tpl', sredstvo = sredstvo, sredstva=uporabnik.stanje.prevozna_sredstva)
 
 
-#uredi definicijo spremenljivke uporabnik
 @bottle.post("/pomembnost-casa/")
 def pomembnost_casa():
     uporabnik = trenutni_uporabnik()
     pomembnost = bottle.request.forms.getunicode("pomembnost_casa")
     uporabnik.nastavi_pomembnost_casa(pomembnost)
+    shrani_stanje(uporabnik)
     bottle.redirect("/")
 
 @bottle.post("/pomembnost-onesnazevanja/")
@@ -157,7 +154,14 @@ def pomembnost_onesnazevanja():
     uporabnik = trenutni_uporabnik()
     pomembnost = bottle.request.forms.getunicode("pomembnost_onesnazevanja")
     uporabnik.nastavi_pomembnost_onesnazevanja(pomembnost)
+    shrani_stanje(uporabnik)
     bottle.redirect("/")
 
+
+"""
+@bottle.post("/odstrani-pot/")
+def odstrani_pot():
+
+""" 
 
 bottle.run(reloader=True, debug=True)
