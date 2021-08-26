@@ -110,8 +110,14 @@ def analiza():
 
 @bottle.get("/pomoc/")
 def pomoc():
-    uporabnik = trenutni_uporabnik()
-    return bottle.template("pomoc.tpl", uporabnik=uporabnik)
+    uporabnisko_ime = bottle.request.get_cookie(
+    PISKOTEK_UPORABNISKO_IME, secret=SKRIVNOST
+    )
+    if uporabnisko_ime:
+        uporabnik = trenutni_uporabnik()
+        return bottle.template("pomoc.tpl", uporabnik=uporabnik)
+    else:
+        return bottle.template("pomoc.tpl", uporabnik=None)
 
 @bottle.post("/dodaj-sredstvo/")
 def dodaj_sredstvo():
