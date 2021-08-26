@@ -149,9 +149,12 @@ def prikazi_sredstvo(ime_sredstva):
     uporabnik = trenutni_uporabnik()
     if ime_sredstva == 'skupno':
         return bottle.template('prikazi_skupno_stanje.tpl', uporabnik=uporabnik, stanje=uporabnik.stanje, sredstva=uporabnik.stanje.prevozna_sredstva)
-    else:
+    elif ime_sredstva in uporabnik.stanje.prevozna_sredstva_po_imenih:
         sredstvo = uporabnik.stanje.poisci_sredstvo(ime_sredstva)
         return bottle.template('prikazi_sredstvo.tpl',  uporabnik=uporabnik, sredstvo = sredstvo, sredstva=uporabnik.stanje.prevozna_sredstva)
+    else:
+        sredstvo = None
+        return bottle.template('prikazi_sredstvo.tpl',  uporabnik=uporabnik, sredstvo = sredstvo, ime_sredstva=ime_sredstva)
 
 
 @bottle.post("/pomembnost-casa/")

@@ -9,6 +9,7 @@
 </head>
 
 <body>
+% if sredstvo:
 <div class="container">
 <h1>{{sredstvo.ime_slo()}}</h1>
 <ul class="collapsible">
@@ -42,5 +43,7 @@
       $('.collapsible').collapsible();
     });
   </script>
-
+% else:
+<h3>Tega prevoznega sredstva nimaš med svojimi sredstvi!</h3>
+% end
 </body>
