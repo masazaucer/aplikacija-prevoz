@@ -1,4 +1,6 @@
-% rebase('base.tpl')
+% rebase('base.tpl', izbrani_zavihek='stanje')
+% SREDSTVA = ["walking", "bicycling", "driving", "train", "bus"]
+
 <div id="index-banner" class="parallax-container">
   <div class="parallax"><img src="https://www.jagriti.org/sea/media/front/assets/img/bg/background1.jpg"></div>
     <div class="section no-pad-bot">
@@ -37,37 +39,37 @@
             <h5 class="center">Vaša prevozna sredstva</h5>
 
               <div class="row">
+<!--                 
               <form action="/dodaj-sredstvo/" method="POST">
-             
-                  <p>
+                <p>
                     <label for="chk-demo1">
-                      <input type="checkbox" class="filled-in" id="chk-demo1" name="driving"/>
+                      <input type="checkbox" id="chk-demo1" name="driving" value="True"/>
                       <span>Avto <i class="material-icons">directions_car</i></span>
                     </label>
                   </p>
                   <p>
                     <label for="chk-demo2">
-                      <input type="checkbox"  class="filled-in" id="chk-demo2" checked="checked" name="bicycling"/>
+                      <input type="checkbox" id="chk-demo2" name="bicycling"value="True"/>
                       <span>Kolo <i class="material-icons">directions_bike</i></span>
                     </label>
                   </p>
                   <p>
                     <label for="chk-demo3">
-                      <input type="checkbox" class="filled-in" id="chk-demo3" checked="checked" name="train"/>
+                      <input type="checkbox" id="chk-demo3" name="train" value="True"/>
                       <span>Javni prevoz <i class="material-icons">directions_transit</i></span>
                     </label>
                   </p>
                   
                   <p>
                     <label for="chk-demo4">
-                      <input type="checkbox" class="filled-in" id="chk-demo4" name="walking"/>
+                      <input type="checkbox" id="chk-demo4" name="walking" value="True"/>
                       <span>Hoja <i class="material-icons">directions_walk</i></span>
                     </label>
                   </p>        
                   <div class="input-field col s12">
                     <button class="btn waves-effect waves-light" type="submit" name="action">DODAJ</button>
                   </div>
-                </form>
+                </form> -->
               </div>  
             </div>
           </div>
@@ -79,7 +81,7 @@
               <div class="container">
                 <div class="input-field col s12 m12">
                 <form action="/pomembnost-casa/" method="POST">
-                  <select class="icons" name="pomembnost_casa">
+                  <select class="icons" name="pomembnost_casa" id='pomembnost_casa'>
                     <option value="" disabled selected>Pomembnost časa</option>
                     <option value="zelo" >Zelo pomemben</option>
                     <option value="vseeno" >Srednje pomemben</option>
@@ -156,3 +158,64 @@
     $('.parallax').parallax();
   });
   </script>
+
+
+
+
+<script>
+  // document ready handler
+  // or $(document).ready(Function(){...
+  jQuery(function($) {
+    var checkboxValue = JSON.parse(localStorage.getItem('checkboxValue')) || {}
+    var $checkbox = $("#checkbox-container :checkbox");
+
+    $checkbox.on("change", function() {
+      $checkbox.each(function() {
+        checkboxValue[this.id] = this.checked;
+      });
+      localStorage.setItem("checkboxValue", JSON.stringify(checkboxValue));
+    });
+
+    //on page load
+    $.each(checkboxValue, function(key, value) {
+      $("#" + key).prop('checked', value);
+    });
+  });
+</script>
+
+  <div class="row">
+    <form action="/dodaj-sredstvo/" method="POST">
+      <div id="checkbox-container">
+          <label for="chk-demo1">
+            <input type="checkbox" id="chk-demo1" name="driving" value="True"/>
+            <span>Avto <i class="material-icons">directions_car</i></span>
+          </label>
+
+      </div>
+        <div id="checkbox-container">
+          <label for="chk-demo2">
+            <input type="checkbox" id="chk-demo2" name="bicycling"value="True"/>
+            <span>Kolo <i class="material-icons">directions_bike</i></span>
+          </label>
+        </div>
+
+        <div id="checkbox-container">
+          <label for="chk-demo3">
+            <input type="checkbox" id="chk-demo3" name="train" value="True"/>
+            <span>Javni prevoz <i class="material-icons">directions_transit</i></span>
+          </label>
+        </div>
+        
+        <div id="checkbox-container">
+          <label for="chk-demo4">
+            <input type="checkbox" id="chk-demo4" name="walking" value="True"/>
+            <span>Hoja <i class="material-icons">directions_walk</i></span>
+          </label>
+        </div>
+  
+        <div class="input-field col s12">
+          <button class="btn waves-effect waves-light" type="submit" name="action">DODAJ</button>
+        </div>
+    </form>
+  
+  </div>

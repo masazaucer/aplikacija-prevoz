@@ -1,4 +1,4 @@
-% rebase('base.tpl')
+% rebase('base.tpl', izbrani_zavihek='prijava')
 
 <form action="/prijava/" method="POST">
     % if napaka:

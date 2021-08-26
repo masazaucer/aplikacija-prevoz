@@ -1,3 +1,14 @@
+% oznaka_zavihka = {
+%     'stanje': 'Domov',
+%     'analiza': 'Analiza',
+%     'pomoc': 'Pomoč',
+%     'poti': 'Poti',
+%     'prijava': 'Prijava',
+%     'registracija': 'Registracija',
+%     'analiza_skupno': 'Analiza skupne porabe',
+%     'analiza_sredstvo': 'Analiza sredstva'
+% }
+
 <!DOCTYPE html>
 <html>
     <head>

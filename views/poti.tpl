@@ -1,4 +1,4 @@
-% rebase('base.tpl')
+% rebase('base.tpl', izbrani_zavihek='poti')
 
 <form action='/dodaj-pot/' method="POST">
   <div class='row'></div>
@@ -58,13 +58,18 @@
             <button class="btn waves-effect waves-light" type="submit" name="action">Dodaj
                 <i class="material-icons right">add</i>
             </button>
+            % if napaka:
+            <h3>{{ napaka }}</h3>
+            % end
         </div>
     </div>
   </div>
 </form>
 
 
-<table class="highlight">
+
+
+<table class="stripped">
     <h2><strong>Tvoje poti:</strong></h2>
     <thead>
       <tr>
@@ -76,6 +81,7 @@
           <th>Trajanje</th>
           <th>Cena</th>
           <th>Izpusti</th>
+          <th></th>
       </tr>
     </thead>
 
@@ -90,6 +96,13 @@
         <td>{{round(pot.trajanje(), 2)}}</td>
         <td>{{round(pot.cena(), 2)}}</td>
         <td>{{round(pot.izpusti(), 2)}}</td>
+        <td>
+          <form action='/odstrani-pot/' method="POST">
+          <button class="btn waves-effect waves-light" type="submit" name="action">Odstrani
+            <i class="material-icons right">add</i>
+          </button>
+          </form>
+        </td>
       </tr>
       <tr>
         <td><b>Optimalna izbira</b></td>
@@ -100,6 +113,7 @@
         <td>{{round(pot.optimalna_pot().trajanje(), 2)}}</td>
         <td>{{round(pot.optimalna_pot().cena(), 2)}}</td>
         <td>{{round(pot.optimalna_pot().izpusti(), 2)}}</td>
+        <td></td>
       </tr>
     % end
     </tbody>

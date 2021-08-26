@@ -1,4 +1,4 @@
-% rebase('analiza.tpl')
+% rebase('analiza.tpl', izbrani_zavihek='analiza_skupno')
 
 <head>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-alpha.4/css/materialize.min.css">
