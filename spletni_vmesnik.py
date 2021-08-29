@@ -1,4 +1,3 @@
-from sys import path
 import bottle
 from model import Stanje, Uporabnik, Prevozno_sredstvo, Pot
 from datetime import date
@@ -132,8 +131,8 @@ def dodaj_sredstvo():
 
 @bottle.post("/dodaj-pot/")
 def dodaj_pot():
+    uporabnik = trenutni_uporabnik()
     try:
-        uporabnik = trenutni_uporabnik()
         zacetek = bottle.request.forms.getunicode("zacetek")
         konec = bottle.request.forms.getunicode("konec")
         datum = bottle.request.forms.getunicode("datum")
@@ -142,20 +141,39 @@ def dodaj_pot():
         shrani_stanje(uporabnik)
         bottle.redirect("/poti/")
     except ValueError as e:
-        return bottle.template('/poti/', napaka=e.args[0])
+        return bottle.template('poti.tpl', napaka=e.args[0], uporabnik=uporabnik, stanje=uporabnik.stanje)
 
 @bottle.get('/analiza/<ime_sredstva>/')
 def prikazi_sredstvo(ime_sredstva):
     uporabnik = trenutni_uporabnik()
     if ime_sredstva == 'skupno':
         return bottle.template('prikazi_skupno_stanje.tpl', uporabnik=uporabnik, stanje=uporabnik.stanje, sredstva=uporabnik.stanje.prevozna_sredstva)
-    elif ime_sredstva in uporabnik.stanje.prevozna_sredstva_po_imenih:
+    try:
         sredstvo = uporabnik.stanje.poisci_sredstvo(ime_sredstva)
-        return bottle.template('prikazi_sredstvo.tpl',  uporabnik=uporabnik, sredstvo = sredstvo, sredstva=uporabnik.stanje.prevozna_sredstva)
-    else:
-        sredstvo = None
-        return bottle.template('prikazi_sredstvo.tpl',  uporabnik=uporabnik, sredstvo = sredstvo, ime_sredstva=ime_sredstva)
+        return bottle.template('prikazi_sredstvo.tpl',  napaka=None, napaka_znesek=None, uporabnik=uporabnik, sredstvo=sredstvo, sredstva=uporabnik.stanje.prevozna_sredstva)
+    except KeyError as e:
+        return bottle.template('prikazi_sredstvo.tpl',  napaka=e.args[0], napaka_znesek=None, uporabnik=uporabnik, sredstva=uporabnik.stanje.prevozna_sredstva)
 
+
+@bottle.post('/dodaj-strosek/')
+def dodaj_strosek():
+    uporabnik = trenutni_uporabnik()
+    ime_sredstva = bottle.request.forms.getunicode("sredstvo")
+    sredstvo = poisci_sredstvo(uporabnik.stanje, 'sredstvo')
+    znesek = bottle.request.forms.getunicode("znesek")
+    print(ime_sredstva, sredstvo, znesek)
+    try:
+        sredstvo.dodaj_strosek(znesek)
+        shrani_stanje(uporabnik)
+        bottle.redirect(f"/analiza/{ime_sredstva}/")
+    except ValueError as e:
+        return bottle.template('prikazi_sredstvo.tpl', napaka=None, napaka_znesek=e.args[0], uporabnik=uporabnik, sredstvo = sredstvo, sredstva=uporabnik.stanje.prevozna_sredstva)
+
+    
+
+
+
+    
 
 @bottle.post("/pomembnost-casa/")
 def pomembnost_casa():
@@ -169,6 +187,7 @@ def pomembnost_casa():
 def pomembnost_onesnazevanja():
     uporabnik = trenutni_uporabnik()
     pomembnost = bottle.request.forms.getunicode("pomembnost_onesnazevanja")
+    print(pomembnost)
     uporabnik.nastavi_pomembnost_onesnazevanja(pomembnost)
     shrani_stanje(uporabnik)
     bottle.redirect("/")
