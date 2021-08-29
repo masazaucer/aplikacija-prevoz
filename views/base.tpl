@@ -6,7 +6,8 @@
 %     'prijava': 'Prijava',
 %     'registracija': 'Registracija',
 %     'analiza_skupno': 'Analiza skupne porabe',
-%     'analiza_sredstvo': 'Analiza sredstva'
+%     'analiza_sredstvo': 'Analiza sredstva',
+%     'odjava': 'Odjava'
 % }
 
 <!DOCTYPE html>
