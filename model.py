@@ -29,12 +29,12 @@ map_client = googlemaps.Client(API_KEY)
 zacetni_url = "https://maps.googleapis.com/maps/api/distancematrix/json?units=metric"
 
 class Uporabnik:
-    def __init__(self, uporabnisko_ime, zasifrirano_geslo, stanje):
+    def __init__(self, uporabnisko_ime, zasifrirano_geslo, stanje, pomembnost_casa=None, pomembnost_onesnazevanja=None):
         self.uporabnisko_ime = uporabnisko_ime
         self.zasifrirano_geslo = zasifrirano_geslo
         self.stanje = stanje
-        self.pomembnost_casa = None
-        self.pomembnost_onesnazevanja = None
+        self.pomembnost_casa = pomembnost_casa
+        self.pomembnost_onesnazevanja = pomembnost_onesnazevanja
     
     @staticmethod
     def ime_uporabnikove_datoteke(uporabnisko_ime):
@@ -79,14 +79,18 @@ class Uporabnik:
             "uporabnisko_ime": self.uporabnisko_ime,
             "zasifrirano_geslo": self.zasifrirano_geslo,
             "stanje": self.stanje.v_slovar(),
+            "pomembnost_casa": self.pomembnost_casa,
+            "pomembnost_onesnazevanja": self.pomembnost_onesnazevanja
         }
 
     @staticmethod
     def iz_slovarja(slovar):
         uporabnisko_ime = slovar["uporabnisko_ime"]
         zasifrirano_geslo = slovar["zasifrirano_geslo"]
+        pomembnost_casa = slovar["pomembnost_casa"]
+        pomembnost_onesnazevanja = slovar["pomembnost_onesnazevanja"]
         stanje = Stanje.iz_slovarja(slovar["stanje"])
-        return Uporabnik(uporabnisko_ime, zasifrirano_geslo, stanje)
+        return Uporabnik(uporabnisko_ime, zasifrirano_geslo, stanje, pomembnost_casa, pomembnost_onesnazevanja)
 
 
     def v_datoteko(self):
