@@ -39,37 +39,53 @@
             <h5 class="center">Vaša prevozna sredstva</h5>
 
               <div class="row">
-<!--                 
               <form action="/dodaj-sredstvo/" method="POST">
-                <p>
+
+                  <p>
                     <label for="chk-demo1">
+                      % if "driving" in stanje.prevozna_sredstva_po_imenih:
+                      <input type="checkbox" id="chk-demo1" checked='checked' name="driving" value="True"/>
+                      % else:
                       <input type="checkbox" id="chk-demo1" name="driving" value="True"/>
+                      % end
                       <span>Avto <i class="material-icons">directions_car</i></span>
                     </label>
                   </p>
                   <p>
                     <label for="chk-demo2">
+                      % if "bicycling" in stanje.prevozna_sredstva_po_imenih:
+                      <input type="checkbox" id="chk-demo2" checked='checked' name="bicycling"value="True"/>
+                      % else:
                       <input type="checkbox" id="chk-demo2" name="bicycling"value="True"/>
+                      %end
                       <span>Kolo <i class="material-icons">directions_bike</i></span>
                     </label>
                   </p>
                   <p>
                     <label for="chk-demo3">
+                      % if "train" in stanje.prevozna_sredstva_po_imenih:
+                      <input type="checkbox" id="chk-demo3" checked='checked' name="train" value="True"/>
+                      % else:
                       <input type="checkbox" id="chk-demo3" name="train" value="True"/>
+                      %end
                       <span>Javni prevoz <i class="material-icons">directions_transit</i></span>
                     </label>
                   </p>
                   
                   <p>
                     <label for="chk-demo4">
+                      % if "walking" in stanje.prevozna_sredstva_po_imenih:
+                      <input type="checkbox" id="chk-demo4" checked='checked' name="walking" value="True"/>
+                      % else:
                       <input type="checkbox" id="chk-demo4" name="walking" value="True"/>
+                      %end
                       <span>Hoja <i class="material-icons">directions_walk</i></span>
                     </label>
                   </p>        
                   <div class="input-field col s12">
                     <button class="btn waves-effect waves-light" type="submit" name="action">DODAJ</button>
                   </div>
-                </form> -->
+                </form>
               </div>  
             </div>
           </div>
@@ -81,11 +97,24 @@
               <div class="container">
                 <div class="input-field col s12 m12">
                 <form action="/pomembnost-casa/" method="POST">
-                  <select class="icons" name="pomembnost_casa" id='pomembnost_casa'>
-                    <option value="" disabled selected>Pomembnost časa</option>
-                    <option value="zelo" >Zelo pomemben</option>
+                    <select class="icons" name="pomembnost_casa">
+                    
+                    % if uporabnik.pomembnost_casa == True:
+                    <option value="" disabled>Pomembnost časa</option>
+                    <option value="zelo" selected>Zelo pomemben</option>
                     <option value="vseeno" >Srednje pomemben</option>
                     <option value="malo" >Manj pomemben</option>
+                    % elif uporabnik.pomembnost_casa == False:
+                    <option value="" disabled>Pomembnost časa</option>
+                    <option value="zelo" >Zelo pomemben</option>
+                    <option value="vseeno" >Srednje pomemben</option>
+                    <option value="malo" selected>Manj pomemben</option>
+                    % elif uporabnik.pomembnost_casa == None:
+                    <option value="" disabled>Pomembnost časa</option>
+                    <option value="zelo" >Zelo pomemben</option>
+                    <option value="vseeno" selected>Srednje pomemben</option>
+                    <option value="malo" >Manj pomemben</option>
+                    % end
                   </select>
                   <div class="input-field col s12">
                     <button class="btn waves-effect waves-light" type="submit" name="action">IZBERI</button>
@@ -103,11 +132,23 @@
               <div class="container">
                 <div class="input-field col s12 m12">
                   <form action="/pomembnost-onesnazevanja/" method="POST">
-                  <select class="icons">
-                    <option value="" disabled selected>Pomembnost okolja</option>
-                    <option value="1" >Veliko</option>
-                    <option value="2" >Malo</option>
-                    <option value="3" >Vseeno</option>
+                  <select class="icons" name="pomembnost_onesnazevanja">
+                    % if uporabnik.pomembnost_onesnazevanja == True:
+                    <option value="" disabled>Pomembnost okolja</option>
+                    <option value="zelo" selected>Veliko</option>
+                    <option value="malo" >Malo</option>
+                    <option value="srednje" >Vseeno</option>
+                    % elif uporabnik.pomembnost_onesnazevanja == False:
+                    <option value="" disabled>Pomembnost okolja</option>
+                    <option value="zelo" >Veliko</option>
+                    <option value="malo" selected>Malo</option>
+                    <option value="srednje" >Vseeno</option>
+                    % elif uporabnik.pomembnost_onesnazevanja == None:
+                    <option value="" disabled>Pomembnost okolja</option>
+                    <option value="zelo" >Veliko</option>
+                    <option value="malo" >Malo</option>
+                    <option value="srednje" selected>Vseeno</option>
+                    %end
                   </select>
                   <div class="input-field col s2">
                     <button class="btn waves-effect waves-light" type="submit" name="action">IZBERI</button>
@@ -158,64 +199,3 @@
     $('.parallax').parallax();
   });
   </script>
-
-
-
-
-<script>
-  // document ready handler
-  // or $(document).ready(Function(){...
-  jQuery(function($) {
-    var checkboxValue = JSON.parse(localStorage.getItem('checkboxValue')) || {}
-    var $checkbox = $("#checkbox-container :checkbox");
-
-    $checkbox.on("change", function() {
-      $checkbox.each(function() {
-        checkboxValue[this.id] = this.checked;
-      });
-      localStorage.setItem("checkboxValue", JSON.stringify(checkboxValue));
-    });
-
-    //on page load
-    $.each(checkboxValue, function(key, value) {
-      $("#" + key).prop('checked', value);
-    });
-  });
-</script>
-
-  <div class="row">
-    <form action="/dodaj-sredstvo/" method="POST">
-      <div id="checkbox-container">
-          <label for="chk-demo1">
-            <input type="checkbox" id="chk-demo1" name="driving" value="True"/>
-            <span>Avto <i class="material-icons">directions_car</i></span>
-          </label>
-
-      </div>
-        <div id="checkbox-container">
-          <label for="chk-demo2">
-            <input type="checkbox" id="chk-demo2" name="bicycling"value="True"/>
-            <span>Kolo <i class="material-icons">directions_bike</i></span>
-          </label>
-        </div>
-
-        <div id="checkbox-container">
-          <label for="chk-demo3">
-            <input type="checkbox" id="chk-demo3" name="train" value="True"/>
-            <span>Javni prevoz <i class="material-icons">directions_transit</i></span>
-          </label>
-        </div>
-        
-        <div id="checkbox-container">
-          <label for="chk-demo4">
-            <input type="checkbox" id="chk-demo4" name="walking" value="True"/>
-            <span>Hoja <i class="material-icons">directions_walk</i></span>
-          </label>
-        </div>
-  
-        <div class="input-field col s12">
-          <button class="btn waves-effect waves-light" type="submit" name="action">DODAJ</button>
-        </div>
-    </form>
-  
-  </div>
