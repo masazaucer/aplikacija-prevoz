@@ -43,58 +43,58 @@
             </div>
           </nav>
 
-          <script type="text/javascript" src="js/materialize.min.js"></script>
-          <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-          <script type = "text/javascript" src = "https://code.jquery.com/jquery-2.1.1.min.js"></script>
-          <script type = "text/javascript" src = "./select.js"></script>
-         
-          <section class="section">
-            {{!base}}
-          </section>
-      
-          <script>    $(document).ready(function(){
-            $('select').formSelect();
-          });
-          </script>
-          <script>
-          
-      $(document).ready(function(){
-        $('.datepicker').datepicker();
-      });
-          </script>
+    <script type="text/javascript" src="js/materialize.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script type = "text/javascript" src = "https://code.jquery.com/jquery-2.1.1.min.js"></script>
+
     
-          <script>
-            $(document).ready(function(){
-              $('select').formSelect();
-            });
-          </script>
+    <section class="section">
+      {{!base}}
+    </section>
+
+    <script>    $(document).ready(function(){
+      $('select').formSelect();
+    });
+    </script>
+    <script>
+    
+$(document).ready(function(){
+  $('.datepicker').datepicker();
+});
+    </script>
+
+    <script>
+      $(document).ready(function(){
+        $('select').formSelect();
+      });
+    </script>
 
         
 
     </body>
     <footer class="page-footer">
-      <div class="container">
-        <div class="row">
-          <div class="col l6 s12">
-            <h5 class="white-text">O projektu</h5>
-            <p class="grey-text text-lighten-4">Projekt je nastal na pobudo Maše Žaucer pod okriljem očeta in šefa Tadeja ter žučnega psa neli</p>
+          <div class="container">
+            <div class="row">
+              <div class="col l6 s12">
+                <h5 class="white-text">O projektu</h5>
+                <p class="grey-text text-lighten-4">Projekt je nastal s pomočjo sofinanciranja Evropske unije za trajnostni razvoj. Želja je ozavestiti vsakega posameznika o izpustih na podlagi prepotovanih poti. Takšen način ozaveščanja je pozitivnejši, saj lahko vsak vidi kako bi lahko spremenil način transporta</p>
+              </div>
+              <div class="col l4 offset-l2 s12">
+                <h5 class="white-text">Links</h5>
+                <ul>
+                  <li><a class="grey-text text-lighten-3" href="#!">Link do izpustov</a></li>
+                  <li><a class="grey-text text-lighten-3" href="#!">Link do dolgorocnih posledic</a></li>
+                  <li><a class="grey-text text-lighten-3" href="#!">Link 3</a></li>
+                  <li><a class="grey-text text-lighten-3" href="#!">Link 4</a></li>
+                </ul>
+              </div>
+            </div>
           </div>
-          <div class="col l4 offset-l2 s12">
-            <h5 class="white-text">Links</h5>
-            <ul>
-              <li><a class="grey-text text-lighten-3" href="#!">Link 1</a></li>
-              <li><a class="grey-text text-lighten-3" href="#!">Link 2</a></li>
-              <li><a class="grey-text text-lighten-3" href="#!">Link 3</a></li>
-              <li><a class="grey-text text-lighten-3" href="#!">Link 4</a></li>
-            </ul>
+          <div class="footer-copyright">
+            <div class="container">
+            © 2021 Copyright Text
+            <a class="grey-text text-lighten-4 right" href="#!">Moje informacije</a>
+            </div>
           </div>
-        </div>
-      </div>
-      <div class="footer-copyright">
-        <div class="container">
-        © 2014 Copyright Text
-        <a class="grey-text text-lighten-4 right" href="#!">More Links</a>
-        </div>
-      </div>
     </footer>
   </html>
