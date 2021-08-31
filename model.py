@@ -207,7 +207,7 @@ class Pot:
             kon = output['destination_addresses']
             zac = output['origin_addresses']
             if self.sredstvo == 'bicycling':
-                trajanje = (output["rows"][0]["elements"][0]["duration"]["value"]) / 3
+                trajanje = (output["rows"][0]["elements"][0]["duration"]["value"]) / 3 #v sloveniji ni podatka o poti s kolseom
             else:
                 trajanje = output["rows"][0]["elements"][0]["duration"]["value"]
             
@@ -221,7 +221,7 @@ class Pot:
     def izracunana_cena(self):
         if self.sredstvo == 'driving':
             c = STROSEK_AVTOMOBILA_NA_KM * self.izracunana_razdalja_in_trajanje()[0] / 1000
-        elif self.sredstvo == 'bus' or self.sredstvo == 'train':
+        elif self.sredstvo == 'train' or self.sredstvo == 'bus':
             c = CENA_VLAK_NA_KM * self.izracunana_razdalja_in_trajanje()[0] / 1000
         else:
             c = 0
@@ -340,9 +340,6 @@ class Prevozno_sredstvo:
         for pot in self.poti:
             izpusti += pot.izpusti
         return izpusti
-    
-    def stevilo_poti(self):
-        return len(self.poti)
 
     def dodaj_strosek(self, strosek):
         if ',' in strosek:
@@ -381,11 +378,10 @@ class Prevozno_sredstvo:
             izpusti += pot.izpusti
         return izpusti
 
-    #dodaj preferenco
+
     def dodaj_pot(self, pot):
         self.poti.append(pot)
         self.optimalne.append(pot.optimalna)
-        print("dodajam sredstvu")
 
     def odstrani_pot(self, pot):
         self.poti.remove(pot)
@@ -447,6 +443,7 @@ class Stanje:
         else:
             raise KeyError(f'Izbranega prevoznega sredstva nimaš med svojimi sredstvi!')
 
+    #dodaj k analizi?
     def poti_sredstva(self, ime):
         yield from self.poti_po_sredstvih[self.poisci_sredstvo(ime)]
 
@@ -473,12 +470,6 @@ class Stanje:
         for sredstvo in self.prevozna_sredstva:
             c += sredstvo.izpusti_co2()
         return c
-
-    def stevilo_poti(self):
-        st = 0
-        for sredstvo in self.prevozna_sredstva:
-            st += sredstvo.stevilo_poti()
-        return st
 
     def skupna_dolzina_optimalno(self):
         d = 0
