@@ -15,6 +15,7 @@ def poisci_sredstvo(stanje, ime_polja):
     except KeyError:
         return None
 
+
 def shrani_stanje(uporabnik):
     uporabnik.v_datoteko()
 
@@ -190,6 +191,15 @@ def dodaj_strosek():
 @bottle.post("/odstrani-pot/")
 def odstrani_pot():
     uporabnik = trenutni_uporabnik()
+    zacetek = bottle.request.forms.getunicode("zacetek")
+    konec = bottle.request.forms.getunicode("konec")
+    sredstvo = bottle.request.forms.getunicode("sredstvo")
+    datum = bottle.request.forms.getunicode("datum")
+    print(zacetek, konec, sredstvo, datum)
+    pot = uporabnik.stanje.poisci_pot(zacetek, konec, sredstvo, datum)
+    uporabnik.stanje.odstrani_pot(pot)
+    shrani_stanje(uporabnik)
+    bottle.redirect('/poti/')
 
 
 

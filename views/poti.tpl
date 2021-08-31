@@ -83,6 +83,7 @@
             <th bgcolor = "#a5d6a7">Trajanje[h]</th>
             <th bgcolor = "#a5d6a7"><a class="btn tooltipped" data-position="top" data-tooltip="Razlago cene">Cena[€]</a></th>
             <th bgcolor = "#a5d6a7"><a class="btn tooltipped" data-position="top" data-tooltip="razlago izpustov">Izpusti[g]</a></th>
+            <th bgcolor="a5d6a7">Odstrani</th>
 
         </tr>
       </thead>
@@ -94,7 +95,7 @@
           % if pot.sredstvo == pot.optimalna["sredstvo"]:
           <td bgcolor="#c8e6c9 ">{{pot.zacetek}}</td>
           <td bgcolor="#c8e6c9 ">{{pot.konec}}</td>
-          <td bgcolor="#c8e6c9 ">{{stanje.poisci_sredstvo(pot.sredstvo).ime_slo()}}</td>
+          <td bgcolor="#c8e6c9 ">{{pot.sredstvo_slo()}}</td>
           <td bgcolor="#c8e6c9 ">{{pot.datum}}</td>
           <td bgcolor="#c8e6c9 ">{{round(pot.razdalja / 1000,2)}}</td>
           <td bgcolor="#c8e6c9 ">{{round(pot.trajanje / 3600,2)}}</td>
@@ -104,13 +105,24 @@
           %else:
           <td bgcolor="#ff8a80 ">{{pot.zacetek}}</td>
           <td bgcolor="#ff8a80 ">{{pot.konec}}</td>
-          <td bgcolor="#ff8a80 ">{{stanje.poisci_sredstvo(pot.sredstvo).ime_slo()}}</td>
+          <td bgcolor="#ff8a80 ">{{pot.sredstvo_slo()}}</td>
           <td bgcolor="#ff8a80 ">{{pot.datum}}</td>
           <td bgcolor="#ff8a80 ">{{round(pot.razdalja / 1000,2)}}</td>
           <td bgcolor="#ff8a80 ">{{round(pot.trajanje / 3600,2)}}</td>
           <td bgcolor="#ff8a80 ">{{round(pot.cena,2)}}</td>
           <td bgcolor="#ff8a80 ">{{round(pot.izpusti,4)}}</td>
           %end
+          <td>
+            <form action='/odstrani-pot/' method="POST">
+              <input type="hidden" name="zacetek" value="{{pot.zacetek}}">
+              <input type="hidden" name="konec" value="{{pot.konec}}">
+              <input type="hidden" name="sredstvo" value="{{pot.sredstvo}}">
+              <input type="hidden" name="datum" value="{{pot.datum}}">
+              <button type="submit" name="action">
+                <i class="material-icons">delete</i>
+              </button>
+            </form>
+          </td>
 
         </tr>
         <tr>

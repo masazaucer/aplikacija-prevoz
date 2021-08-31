@@ -446,6 +446,12 @@ class Stanje:
         else:
             raise KeyError(f'Izbranega prevoznega sredstva nimaš med svojimi sredstvi!')
 
+    def poisci_pot(self, zacetek, konec, sredstvo, datum):
+        for pot in self.poti:
+            if pot.zacetek == zacetek and pot.konec == konec and pot.sredstvo == sredstvo and pot.datum == datum:
+                return pot
+        raise ValueError('Ta pot ne obstaja!')
+
     #dodaj k analizi?
     def poti_sredstva(self, ime):
         yield from self.poti_po_sredstvih[self.poisci_sredstvo(ime)]
