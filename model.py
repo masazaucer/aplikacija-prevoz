@@ -354,31 +354,6 @@ class Prevozno_sredstvo:
             raise ValueError('Prosim vnesite število!')
 
 
-    def skupna_dolzina_optimalno(self):
-        d = 0
-        for pot in self.optimalne:
-            d += pot.razdalja
-        return d
-
-    def skupno_trajanje_optimalno(self):
-        t = 0
-        for pot in self.optimalne:
-            t += pot.trajanje
-        return t
-
-    def skupna_cena_optimalno(self):
-        c = 0
-        for pot in self.optimalne:
-            c += pot.cena
-        return c
-
-    def izpusti_co2_optimalno(self):
-        izpusti = 0
-        for pot in self.optimalne:
-            izpusti += pot.izpusti
-        return izpusti
-
-
     def dodaj_pot(self, pot):
         self.poti.append(pot)
         self.optimalne.append(pot.optimalna)
