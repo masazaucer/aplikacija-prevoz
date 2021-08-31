@@ -124,7 +124,24 @@ def dodaj_sredstvo():
     for sredstvo in SREDSTVA:
         if bottle.request.forms.getunicode(sredstvo) == 'True' and (sredstvo not in uporabnik.stanje.prevozna_sredstva_po_imenih):
             uporabnik.stanje.dodaj_sredstvo(sredstvo)
-        elif bottle.request.forms.getunicode(sredstvo) != 'True' and (sredstvo in uporabnik.stanje.prevozna_sredstva_po_imenih):
+    shrani_stanje(uporabnik)
+    sez = []
+    for sredstvo in SREDSTVA:
+        if bottle.request.forms.getunicode(sredstvo) != 'True' and (sredstvo in uporabnik.stanje.prevozna_sredstva_po_imenih):
+            sez.append(sredstvo)
+    if sez:
+        return bottle.template('odstrani_sredstvo.tpl', uporabnik=uporabnik, sredstva=sez)
+    else:
+        bottle.redirect("/")
+
+
+@bottle.post('/odstrani-sredstvo/')
+def odstrani_sredstvo_post():
+    uporabnik=trenutni_uporabnik()
+    for sredstvo in SREDSTVA:
+        print(sredstvo)
+        if bottle.request.forms.getunicode(sredstvo) == 'True':
+            print('odstranjujem')
             uporabnik.stanje.odstrani_sredstvo(sredstvo)
     shrani_stanje(uporabnik)
     bottle.redirect("/")
@@ -170,6 +187,9 @@ def dodaj_strosek():
         return bottle.template('prikazi_sredstvo.tpl', napaka=None, napaka_znesek=e.args[0], uporabnik=uporabnik, sredstvo = sredstvo, sredstva=uporabnik.stanje.prevozna_sredstva)
 
     
+@bottle.post("/odstrani-pot/")
+def odstrani_pot():
+    uporabnik = trenutni_uporabnik()
 
 
 
@@ -192,11 +212,5 @@ def pomembnost_onesnazevanja():
     shrani_stanje(uporabnik)
     bottle.redirect("/")
 
-
-"""
-@bottle.post("/odstrani-pot/")
-def odstrani_pot():
-
-""" 
 
 bottle.run(reloader=True, debug=True)

@@ -362,8 +362,6 @@ class Prevozno_sredstvo:
         self.poti.remove(pot)
         self.optimalne.remove(pot.optimalna)
 
-    def podvoji_pot(self, pot):
-        self.poti.append(pot)
 
 
 class Stanje:
@@ -390,6 +388,8 @@ class Stanje:
             sredstvo = self.prevozna_sredstva_po_imenih[ime]
             for pot in sredstvo.poti:
                 self.poti_po_sredstvih[None].append(pot)
+            for optimalna in sredstvo.optimalne:
+                self.optimalne_po_sredstvih[None].append(optimalna)
             self.prevozna_sredstva.remove(sredstvo)
             del self.poti_po_sredstvih[sredstvo]
             del self.optimalne_po_sredstvih[sredstvo]
@@ -401,23 +401,40 @@ class Stanje:
     def dodaj_pot(self, zacetek, konec, sredstvo, datum, razdalja=None, trajanje=None, cena=None, izpusti=None, optimalna=None, rec=True):
         if sredstvo in self.prevozna_sredstva_po_imenih:
             nova = Pot(zacetek, konec, sredstvo, datum, razdalja, trajanje, cena, izpusti, optimalna, rec)
+            sredstvo = self.poisci_sredstvo(sredstvo)
             print("dodajam stanju")
             self.poti.append(nova)
             self.optimalne.append(nova.optimalna)
-            self.poti_po_sredstvih[self.prevozna_sredstva_po_imenih[sredstvo]].append(nova)
-            self.optimalne_po_sredstvih[self.prevozna_sredstva_po_imenih[sredstvo]].append(nova.optimalna)
-            self.prevozna_sredstva_po_imenih[sredstvo].dodaj_pot(nova)
+            self.poti_po_sredstvih[sredstvo].append(nova)
+            self.optimalne_po_sredstvih[sredstvo].append(nova.optimalna)
+            sredstvo.dodaj_pot(nova)
             return nova
-        else:
+        elif razdalja == None:
             raise ValueError(f'Izbranega prevoznega sredstva nimate med svojimi sredstvi!')
+        else:
+            nova = Pot(zacetek, konec, sredstvo, datum, razdalja, trajanje, cena, izpusti, optimalna, rec=False)
+            self.poti.append(nova)
+            self.optimalne.append(nova.optimalna)
+            self.poti_po_sredstvih[None].append(nova)
+            self.optimalne_po_sredstvih[None].append(nova.optimalna)
+            return nova
+
 
 
     def odstrani_pot(self, pot):
         if pot in self.poti:
-            self.poti_po_sredstvih[self.poisci_sredstvo(pot.sredstvo)].remove(pot)
-            self.optimalne_po_sredstvih[self.poisci_sredstvo(pot.sredstvo)].remove(pot.optimalna)     
-            self.poti.remove(pot)
-            self.optimalne.remove(pot.optimalna) 
+            if pot.sredstvo in self.prevozna_sredstva_po_imenih:
+                sredstvo = self.poisci_sredstvo(pot.sredstvo)
+                self.poti_po_sredstvih[sredstvo].remove(pot)
+                self.optimalne_po_sredstvih[sredstvo].remove(pot.optimalna)     
+                self.poti.remove(pot)
+                self.optimalne.remove(pot.optimalna) 
+                sredstvo.odstrani_pot(pot)
+            else:
+                self.poti_po_sredstvih[None].remove(pot)
+                self.optimalne_po_sredstvih[None].remove(pot.optimalna)     
+                self.poti.remove(pot)
+                self.optimalne.remove(pot.optimalna) 
         else:
             print('napaka')
             return None
