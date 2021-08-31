@@ -28,7 +28,8 @@
           <option value="" disabled selected>Sredstvo</option>
           <option value="driving">Avto</option>
           <option value="walking">Hoja</option>
-          <option value="train">Javni prevoz</option>
+          <option value="train">Vlak</option>
+          <option value="bus">Bus</option>
           <option value="bicycling">Kolo</option>
      
         </select>

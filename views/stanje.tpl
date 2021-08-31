@@ -48,7 +48,7 @@
                       % else:
                       <input type="checkbox" id="chk-demo1" name="driving" value="True"/>
                       % end
-                      <span>Avto <i class="material-icons">directions_car</i></span>
+                      <span><i class="material-icons">directions_car</i>  Avto</span>
                     </label>
                   </p>
                   <p>
@@ -58,7 +58,7 @@
                       % else:
                       <input type="checkbox" id="chk-demo2" name="bicycling"value="True"/>
                       %end
-                      <span>Kolo <i class="material-icons">directions_bike</i></span>
+                      <span><i class="material-icons">directions_bike</i>  Kolo</span>
                     </label>
                   </p>
                   <p>
@@ -68,18 +68,27 @@
                       % else:
                       <input type="checkbox" id="chk-demo3" name="train" value="True"/>
                       %end
-                      <span>Javni prevoz <i class="material-icons">directions_transit</i></span>
+                      <span><i class="material-icons">directions_railway</i>  Vlak</span>
                     </label>
                   </p>
-                  
                   <p>
                     <label for="chk-demo4">
-                      % if "walking" in stanje.prevozna_sredstva_po_imenih:
-                      <input type="checkbox" id="chk-demo4" checked='checked' name="walking" value="True"/>
+                      % if "bus" in stanje.prevozna_sredstva_po_imenih:
+                      <input type="checkbox" id="chk-demo4" checked='checked' name="bus" value="True"/>
                       % else:
-                      <input type="checkbox" id="chk-demo4" name="walking" value="True"/>
+                      <input type="checkbox" id="chk-demo4" name="bus" value="True"/>
                       %end
-                      <span>Hoja <i class="material-icons">directions_walk</i></span>
+                      <span><i class="material-icons">directions_bus</i>  Avtobus</span>
+                    </label>
+                  </p>
+                  <p>
+                    <label for="chk-demo5">
+                      % if "walking" in stanje.prevozna_sredstva_po_imenih:
+                      <input type="checkbox" id="chk-demo5" checked='checked' name="walking" value="True"/>
+                      % else:
+                      <input type="checkbox" id="chk-demo5" name="walking" value="True"/>
+                      %end
+                      <span><i class="material-icons">directions_walk</i>  Hoja</span>
                     </label>
                   </p>        
                   <div class="input-field col s12">
