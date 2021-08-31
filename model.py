@@ -412,6 +412,17 @@ class Stanje:
             raise ValueError(f'Izbranega prevoznega sredstva nimate med svojimi sredstvi!')
 
 
+    def odstrani_pot(self, pot):
+        if pot in self.poti:
+            self.poti_po_sredstvih[self.poisci_sredstvo(pot.sredstvo)].remove(pot)
+            self.optimalne_po_sredstvih[self.poisci_sredstvo(pot.sredstvo)].remove(pot.optimalna)     
+            self.poti.remove(pot)
+            self.optimalne.remove(pot.optimalna) 
+        else:
+            print('napaka')
+            return None
+
+
     def poisci_sredstvo(self, ime):
         if ime in self.prevozna_sredstva_po_imenih:
             return self.prevozna_sredstva_po_imenih[ime]
@@ -530,14 +541,3 @@ class Stanje:
             slovar = json.load(dat)
             print(slovar)
             return Stanje.iz_slovarja(slovar)
-
-"""
-    def odstrani_pot(self, pot):
-        if pot in self.poti:
-            self.poti_po_sredstvih[pot.sredstvo()].remove(pot)
-            self.optimalne_po_sredstvih[pot.sredstvo()].remove(pot.optimalna)     
-            self.poti.remove(pot)
-            self.optimalne.remove(pot.optimalna) 
-        else:
-            return None      
-"""
