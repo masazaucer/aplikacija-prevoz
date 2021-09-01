@@ -77,15 +77,19 @@ $(document).ready(function(){
             <div class="row">
               <div class="col l6 s12">
                 <h5 class="white-text">O projektu</h5>
-                <p class="grey-text text-lighten-4">Projekt je nastal s pomočjo sofinanciranja Evropske unije za trajnostni razvoj. Želja je ozavestiti vsakega posameznika o izpustih na podlagi prepotovanih poti. Takšen način ozaveščanja je pozitivnejši, saj lahko vsak vidi kako bi lahko spremenil način transporta</p>
+                <p class="grey-text text-lighten-4">
+                  Projekt je nastal v okviru predmeta uvod v programiranje. 
+                  Želja je spodbuditi ljudi k uporabi prevoznih sredstev, ki manj onesnažujejo okolje.
+                </p>
               </div>
               <div class="col l4 offset-l2 s12">
-                <h5 class="white-text">Links</h5>
+                <h5 class="white-text">Viri</h5>
                 <ul>
-                  <li><a class="grey-text text-lighten-3" href="#!">Link do izpustov</a></li>
-                  <li><a class="grey-text text-lighten-3" href="#!">Link do dolgorocnih posledic</a></li>
-                  <li><a class="grey-text text-lighten-3" href="#!">Link 3</a></li>
-                  <li><a class="grey-text text-lighten-3" href="#!">Link 4</a></li>
+                  <li><a class="grey-text text-lighten-3" href="https://www.statista.com/statistics/1185559/carbon-footprint-of-travel-per-kilometer-by-mode-of-transport/">Carbon footprint of select modes of transport per kilometer of travel in 2018</a></li>
+                  <li><a class="grey-text text-lighten-3" href="https://op.europa.eu/en/publication-detail/-/publication/9781f65f-8448-11ea-bf12-01aa75ed71a1">Handbook on the external costs of transport</a></li>
+                  <li><a class="grey-text text-lighten-3" href="https://ourworldindata.org/travel-carbon-footprint">Which form of transport has the smallest carbon footprint?</a></li>
+                  <li><a class="grey-text text-lighten-3" href="https://www.sptm.si/application/files/3116/1648/8282/2017_MZI_P_R_-_Smernice_za_vzpostavitev_sistema_P_R__parkiraj_in_presedi__in_umescanje_vozlisc_P_R_v_urbanih_naseljih_V1.pdf">Smernice za vzpostavitev sistema P+R</a></li>
+                  <li><a class="grey-text text-lighten-3" href="https://www.sptm.si/application/files/3116/1648/8282/2017_MZI_P_R_-https://en.wikipedia.org/wiki/Value_of_time#:~:text=In%20transport%20economics%2C%20the%20value,as%20compensation%20for%20lost%20time.pdf">Vrednost časa</a></li>
                 </ul>
               </div>
             </div>
@@ -93,7 +97,6 @@ $(document).ready(function(){
           <div class="footer-copyright">
             <div class="container">
             © 2021 Copyright Text
-            <a class="grey-text text-lighten-4 right" href="#!">Moje informacije</a>
             </div>
           </div>
     </footer>
