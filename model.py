@@ -7,17 +7,15 @@ from datetime import date
 import hashlib
 import random
 
-CENA_NA_KM = 8*1.268/100 #€/l
 CO2_NA_KM_AVTO = 180 #g/km
 CO2_NA_KM_BUS = 90 #g/km
 CO2_NA_KM_VLAK = 45 #g/km
-CENA_GORIVA = 1.268 #€/l
 CENA_IZPUSTOV_VISOKA = 500 #€/t CO2
 CENA_IZPUSTOV_SREDNJA = 270 #€/t CO2
 CENA_IZPUSTOV_NIZKA = 156 #€/t CO2
-CENA_CASA_VISOKA = 0.14 #€/min
-CENA_CASA_SREDNJA = 0.08 #€/min
-CENA_CASA_NIZKA = 0.02 #€/min
+CENA_CASA_VISOKA = 0.18 #€/min
+CENA_CASA_SREDNJA = 0.09 #€/min
+CENA_CASA_NIZKA = 0.06 #€/min
 STROSEK_AVTOMOBILA_NA_KM = 0.15 #€/km
 CENA_VLAK_NA_KM = 0.1 #€/km
 
