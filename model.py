@@ -215,14 +215,14 @@ class Pot:
         
         return c
 
-    #izračuna količino izpustov CO2, proizvedenih s potjo v tonah
+    #izračuna količino izpustov CO2, proizvedenih s potjo v gramih
     def izracunani_izpusti(self):
         if self.sredstvo == "driving":
-            return self.izracunana_razdalja_in_trajanje()[0] * CO2_NA_KM_AVTO * 10 **(-9)
+            return self.izracunana_razdalja_in_trajanje()[0] * CO2_NA_KM_AVTO * 10 **(-3)
         elif self.sredstvo == "train":
-            return self.izracunana_razdalja_in_trajanje()[0] * CO2_NA_KM_VLAK * 10 **(-9)
+            return self.izracunana_razdalja_in_trajanje()[0] * CO2_NA_KM_VLAK * 10 **(-3)
         elif self.sredstvo == "bus":
-            return self.izracunana_razdalja_in_trajanje()[0] * CO2_NA_KM_BUS * 10 **(-9)
+            return self.izracunana_razdalja_in_trajanje()[0] * CO2_NA_KM_BUS * 10 **(-3)
         else:
             return 0
 
@@ -261,11 +261,11 @@ def cena_casa(trajanje, preferenca_cas):
 #izračuna vrednost izpustov CO2, ki jih proizvedeš s potjo
 def cena_izpustov(izpusti, preferenca_onesnazevanje):
     if preferenca_onesnazevanje:
-        cena = CENA_IZPUSTOV_VISOKA * izpusti
+        cena = CENA_IZPUSTOV_VISOKA * izpusti * 10 **(-6)
     elif preferenca_onesnazevanje == None:
-        cena = CENA_IZPUSTOV_SREDNJA * izpusti
+        cena = CENA_IZPUSTOV_SREDNJA * izpusti * 10 **(-6)
     else:
-        cena = CENA_IZPUSTOV_NIZKA * izpusti
+        cena = CENA_IZPUSTOV_NIZKA * izpusti * 10 **(-6)
     return cena
 
 #izračuna celotno ceno poti skupaj z navideznimi stroški časa in izpustov CO2
