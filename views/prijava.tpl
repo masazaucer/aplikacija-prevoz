@@ -1,5 +1,7 @@
 % rebase('base.tpl', izbrani_zavihek='prijava')
 
+<h1>Prijava</h1>
+
 <form action="/prijava/" method="POST">
     % if napaka:
         <h3>{{ napaka }}</h3>
@@ -20,10 +22,19 @@
 
     <div class="row">
         <div class="input-field col s12">
-            <div class='center'>
-                <button class="btn waves-effect waves-light" type="submit" name="action">Prijava
-                </button>
-            </div>
+            <button class="btn waves-effect waves-light" type="submit" name="action">Prijava</button>
         </div>
     </div> 
 </form>
+
+<div class="center">
+    <strong>
+        <p>
+            Še nimate računa?
+            Tukaj se lahko registrirate:
+        </p>
+        <form action="/registracija/" method="GET">
+            <button class="btn waves-effect waves-light" type="submit" name="action">Registracija</button>
+        </form>
+    </strong>
+</div>
