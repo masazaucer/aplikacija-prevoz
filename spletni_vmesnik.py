@@ -155,7 +155,9 @@ def dodaj_pot():
         konec = bottle.request.forms.getunicode("konec")
         datum = bottle.request.forms.getunicode("datum")
         ime_sredstva = bottle.request.forms.getunicode("sredstvo")
-        uporabnik.stanje.dodaj_pot(zacetek, konec, ime_sredstva, datum)
+        preferenca_cas = uporabnik.pomembnost_casa
+        preferenca_onesnazevanje = uporabnik.pomembnost_onesnazevanja
+        uporabnik.stanje.dodaj_pot(zacetek, konec, ime_sredstva, datum, pomembnost_casa=preferenca_cas, pomembnost_onesnazevanja=preferenca_onesnazevanje)
         shrani_stanje(uporabnik)
         bottle.redirect("/poti/")
     except ValueError as e:

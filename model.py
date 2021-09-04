@@ -129,8 +129,7 @@ class Uporabnik:
 
 
 class Pot:
-    def __init__(self, zacetek, konec, sredstvo, datum, razdalja=None, trajanje=None, cena=None, izpusti=None, optimalna=None, rec=True):
-        print("ustvarjam pot")
+    def __init__(self, zacetek, konec, sredstvo, datum, razdalja=None, trajanje=None, cena=None, izpusti=None, optimalna=None, pomembnost_casa=None, pomembnost_onesnazevanja=None, rec=True):
         self.zacetek = zacetek
         self.konec = konec
         self.sredstvo = sredstvo
@@ -161,21 +160,14 @@ class Pot:
         if optimalna != None:
             self.optimalna = optimalna
         elif rec:
-            print("iscem optimalno pot")
-            self.optimalna = self.optimalna_pot()
-            
-        print("ustvaril sem pot")
+            self.optimalna = self.optimalna_pot(pomembnost_casa, pomembnost_onesnazevanja)
 
-        
-        
-
-
-        
 
     def __str__(self):
         return f'Pot({self.zacetek}, {self.konec}, {self.sredstvo}, {self.datum})'
 
 
+    # prevede ime sredstva v slovenščino
     def sredstvo_slo(self):
         return prevedi(self.sredstvo)
 
@@ -184,34 +176,31 @@ class Pot:
     def url(self):
         if self.sredstvo == 'train' or self.sredstvo == 'bus':
             u = zacetni_url + "&origins=" + self.zacetek + "&destinations=" + self.konec + "&mode=transit&transit_mode=" + self.sredstvo + "&key=" + API_KEY
-            print("vlak/bus")
             return u
         elif self.sredstvo == 'walking' or self.sredstvo == 'bicycling':
             u = zacetni_url + "&origins=" + self.zacetek + "&destinations=" + self.konec + "&mode=walking&key=" + API_KEY
             return u
         elif self.sredstvo == 'driving':
             u = zacetni_url + "&origins=" + self.zacetek + "&destinations=" + self.konec + "&mode=" + self.sredstvo + "&key=" + API_KEY
-            print("avto")
             return u
         else:
-            print("budala")
+            raise ValueError("Prevozno sredstvo ne obstaja!")
 
     #izračuna prepotovano razdaljo med začetnim in končnim krajem z danim prevoznim sredstvom
     def izracunana_razdalja_in_trajanje(self):
         try:
             output = requests.get(self.url()).json()
-            print(output)
             razdalja = output["rows"][0]["elements"][0]["distance"]["value"]
             kon = output['destination_addresses']
             zac = output['origin_addresses']
             if self.sredstvo == 'bicycling':
-                trajanje = (output["rows"][0]["elements"][0]["duration"]["value"]) / 3 #v sloveniji ni podatka o poti s kolseom
+                trajanje = (output["rows"][0]["elements"][0]["duration"]["value"]) / 3 #povprečna hitrost mestne vožnje s kolesom je 15km/h hoje pa 5km/h
             else:
                 trajanje = output["rows"][0]["elements"][0]["duration"]["value"]
             
             return (razdalja, trajanje)
-        except KeyError:
-            return None
+        except KeyError or IndexError:
+            raise ValueError("Ta pot ne obstaja! Preveri vnešene podatke.")
 
 
     #izračuna dejansko ceno poti(gorivo, stroški uporabe avtomobila, približna ocena cene vozovnic na kilometer prepotovane poti z vlakom/busom)
