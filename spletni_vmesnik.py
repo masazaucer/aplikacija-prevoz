@@ -140,7 +140,6 @@ def dodaj_sredstvo():
 def odstrani_sredstvo_post():
     uporabnik=trenutni_uporabnik()
     for sredstvo in SREDSTVA:
-        print(sredstvo)
         if bottle.request.forms.getunicode(sredstvo) == 'True':
             print('odstranjujem')
             uporabnik.stanje.odstrani_sredstvo(sredstvo)
