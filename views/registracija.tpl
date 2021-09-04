@@ -1,5 +1,7 @@
 % rebase('base.tpl', izbrani_zavihek='registracija')
 
+<h1>Registracija</h1>
+
 <form action="/registracija/" method="POST">
     % if napaka:
     <h3>{{ napaka }}</h3>
