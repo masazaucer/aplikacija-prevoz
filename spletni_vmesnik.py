@@ -45,6 +45,8 @@ def registracija_post():
     password = bottle.request.forms.getunicode("password")
     if not username:
         return bottle.template("registracija.tpl", napaka="Vnesi uporabniško ime!", uporabnik=None)
+    elif not password:
+        return bottle.template("registracija.tpl", napaka="Vnesi geslo!", uporabnik=None)
     try:
         Uporabnik.registracija(username, password)
         bottle.response.set_cookie(
