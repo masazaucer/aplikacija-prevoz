@@ -116,7 +116,6 @@ class Uporabnik:
             self.pomembnost_casa = None
 
     def nastavi_pomembnost_onesnazevanja(self, vrednost):
-        
         if vrednost == 'zelo':
             self.pomembnost_onesnazevanja = True
         elif vrednost == 'malo':
@@ -232,16 +231,14 @@ class Pot:
     def optimalna_pot(self, preferenca_cas=None, preferenca_onesnazevanje=None):
         min = math.inf
         optimalna = ''
-
+        
         for sredstvo in SREDSTVA:
             
             pot = Pot(self.zacetek, self.konec, sredstvo, self.datum, rec=False)
-            print(pot)
             if not pot:
                 continue
             else:
                 i = indeks(pot.trajanje, pot.izpusti, pot.cena, preferenca_cas, preferenca_onesnazevanje)
-                print(i)
                 if i < min:
                     optimalna = pot
                     min = i
@@ -296,38 +293,42 @@ class Prevozno_sredstvo:
     def ime_slo(self):
         return prevedi(self.ime)
 
+    # skupna dolžina vseh poti tega sredstva
     def skupna_dolzina(self):
         d = 0
         for pot in self.poti:
             d += pot.razdalja
         return d
     
+    # skupno trajanje vseh poti tega sredstva
     def skupno_trajanje(self):
         t = 0
         for pot in self.poti:
             t += pot.trajanje
         return t
     
+    #skupna cena vseh poti tega sredstva
     def skupna_cena(self):
         c = 0
         for pot in self.poti:
             c += pot.cena
         return c
 
+    # skupna cena poti sredstva in dodatnih stroškov pri sredstvu
     def skupna_cena_sredstva(self):
-        print(self.cena)
         cena_sredstva = self.cena
         cena_poti = self.skupna_cena()
         skupaj = cena_sredstva + cena_poti
-        print(cena_sredstva, cena_poti, skupaj)
         return skupaj
 
+    # skupni izpusti vseh poti tega sredstva v gramih
     def izpusti_co2(self):
         izpusti = 0
         for pot in self.poti:
             izpusti += pot.izpusti
         return izpusti
 
+    # doda strošek, porabljen za sredstvo
     def dodaj_strosek(self, strosek):
         if ',' in strosek:
             raise ValueError('Prosimo, uporabite piko!')
@@ -340,11 +341,12 @@ class Prevozno_sredstvo:
         else:
             raise ValueError('Prosim vnesite število!')
 
-
+    #doda pot na seznam poti tega sredstva
     def dodaj_pot(self, pot):
         self.poti.append(pot)
         self.optimalne.append(pot.optimalna)
-
+        
+    # odstrani pot s seznama poti sredstva
     def odstrani_pot(self, pot):
         self.poti.remove(pot)
         self.optimalne.remove(pot.optimalna)
@@ -360,6 +362,7 @@ class Stanje:
         self.poti_po_sredstvih = {None: []}
         self.optimalne_po_sredstvih = {None: []}
 
+    # ustvari objekt razreda sredstvo in ga doda v objekt razreda stanje
     def dodaj_sredstvo(self, ime, cena=0):
         if ime in self.prevozna_sredstva_po_imenih:
             raise ValueError(f'Prevozno sredstvo {ime} že obstaja!')
@@ -370,6 +373,7 @@ class Stanje:
         self.optimalne_po_sredstvih[nov] = []
         return nov
 
+    # odstrani sredstvo z danim imenom in njegove poti pripiše h ključu None v slovarju poti
     def odstrani_sredstvo(self, ime):
         if ime in self.prevozna_sredstva_po_imenih:
             sredstvo = self.prevozna_sredstva_po_imenih[ime]
@@ -384,12 +388,12 @@ class Stanje:
         else:
             return None
 
+    # doda pot v stanje in k ustreznemu sredstvu
     # treba je vključiti še preference
-    def dodaj_pot(self, zacetek, konec, sredstvo, datum, razdalja=None, trajanje=None, cena=None, izpusti=None, optimalna=None, rec=True):
+    def dodaj_pot(self, zacetek, konec, sredstvo, datum, razdalja=None, trajanje=None, cena=None, izpusti=None, optimalna=None, pomembnost_casa=None, pomembnost_onesnazevanja=None, rec=True):
         if sredstvo in self.prevozna_sredstva_po_imenih:
-            nova = Pot(zacetek, konec, sredstvo, datum, razdalja, trajanje, cena, izpusti, optimalna, rec)
+            nova = Pot(zacetek, konec, sredstvo, datum, razdalja, trajanje, cena, izpusti, optimalna, pomembnost_casa, pomembnost_onesnazevanja, rec)
             sredstvo = self.poisci_sredstvo(sredstvo)
-            print("dodajam stanju")
             self.poti.append(nova)
             self.optimalne.append(nova.optimalna)
             self.poti_po_sredstvih[sredstvo].append(nova)
@@ -399,7 +403,7 @@ class Stanje:
         elif razdalja == None:
             raise ValueError(f'Izbranega prevoznega sredstva nimate med svojimi sredstvi!')
         else:
-            nova = Pot(zacetek, konec, sredstvo, datum, razdalja, trajanje, cena, izpusti, optimalna, rec=False)
+            nova = Pot(zacetek, konec, sredstvo, datum, razdalja, trajanje, cena, izpusti, optimalna, pomembnost_casa, pomembnost_onesnazevanja, rec=False)
             self.poti.append(nova)
             self.optimalne.append(nova.optimalna)
             self.poti_po_sredstvih[None].append(nova)
@@ -407,7 +411,7 @@ class Stanje:
             return nova
 
 
-
+    # odstrani pot iz vseh seznamov in slovarjev
     def odstrani_pot(self, pot):
         if pot in self.poti:
             if pot.sredstvo in self.prevozna_sredstva_po_imenih:
@@ -423,76 +427,80 @@ class Stanje:
                 self.poti.remove(pot)
                 self.optimalne.remove(pot.optimalna) 
         else:
-            print('napaka')
             return None
 
-
+    # poišče objekt razreda sredstvo z danim imenom
     def poisci_sredstvo(self, ime):
         if ime in self.prevozna_sredstva_po_imenih:
             return self.prevozna_sredstva_po_imenih[ime]
         else:
             raise KeyError(f'Izbranega prevoznega sredstva nimaš med svojimi sredstvi!')
 
+    # poišče objekt razreda pot z danimi podatki
     def poisci_pot(self, zacetek, konec, sredstvo, datum):
         for pot in self.poti:
             if pot.zacetek == zacetek and pot.konec == konec and pot.sredstvo == sredstvo and pot.datum == datum:
                 return pot
         raise ValueError('Ta pot ne obstaja!')
 
-    #dodaj k analizi?
-    def poti_sredstva(self, ime):
-        yield from self.poti_po_sredstvih[self.poisci_sredstvo(ime)]
-
+    # izračuna skupno razdaljo vseh poti vseh sredstev
     def skupna_razdalja(self):
         d = 0
         for sredstvo in self.prevozna_sredstva:
             d += sredstvo.skupna_dolzina()
         return d
 
+    # izračuna skupno trajanje poti vseh sredstev
     def skupno_trajanje(self):
         t = 0
         for sredstvo in self.prevozna_sredstva:
             t += sredstvo.skupno_trajanje()
         return t      
 
+    # izračuna skupno ceno vseh sredstev(vključno s stroški sredstev)
     def skupna_cena(self):
         c = 0
         for sredstvo in self.prevozna_sredstva:
             c += sredstvo.skupna_cena_sredstva()
         return c
 
+    # izračuna skupno količino izpustov vseh poti vseh sredstev
     def skupni_izpusti(self):
         c = 0
         for sredstvo in self.prevozna_sredstva:
             c += sredstvo.izpusti_co2()
         return c
 
+    # izračuna dolžino vseh poti, če bi vsakič izbral optimalno sredstvo
     def skupna_dolzina_optimalno(self):
         d = 0
         for pot in self.optimalne:
             d += pot["razdalja"]
         return d
 
+    # izračuna koliko bi trajale poti, če bi vsakič izbral optimalno sredstvo
     def skupno_trajanje_optimalno(self):
         t = 0
         for pot in self.optimalne:
             t += pot["trajanje"]
         return t
 
+    # izračuna koliko bi bilo stroškov, če bi vsakič izbral optimalno sredstvo
     def skupna_cena_optimalno(self):
         c = 0
         for pot in self.optimalne:
             c += pot["cena"]
         return c
 
+    # izračuna koliko bi bilo izpustov, če bi vsakič izbral optimalno sredstvo
     def izpusti_co2_optimalno(self):
         izpusti = 0
         for pot in self.optimalne:
             izpusti += pot["izpusti"]
         return izpusti
 
+    #podatke o objektu razreda stanje zapiše v slovar
     def v_slovar(self):
-            print("dodajam v slovar")
             return {
                 "prevozna sredstva": [
                     {
@@ -516,6 +524,8 @@ class Stanje:
                     for pot in self.poti
                 ],
             }
+            
+    #iz slovarja prebere podatke in ustvari objekt razreda stanje
     @staticmethod
     def iz_slovarja(slovar):
         stanje = Stanje()
@@ -535,19 +545,17 @@ class Stanje:
                 pot["optimalna"],
                 rec=False
             )
-        print("iz_slovarja")
         return stanje
         
+    # shrani uporabnikovo stanje v datoteko
     def shrani_stanje(self, ime_datoteke):
-        print("shranjujem stanje")
         with open(ime_datoteke, 'w') as dat:
             slovar = self.v_slovar()
             json.dump(slovar, dat)
     
+    #prebere stanje iz datoteke z uporabnikovim stanjem
     @staticmethod
     def nalozi_stanje(ime_datoteke):
-        print("nalagam stanje")
         with open(ime_datoteke) as dat:
             slovar = json.load(dat)
-            print(slovar)
             return Stanje.iz_slovarja(slovar)
